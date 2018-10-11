@@ -1,0 +1,224 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FormulateActivity"
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:id="@+id/relative_1"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:background="@drawable/border_bottom">
+
+        <ImageView
+            android:id="@+id/app_icon"
+            android:src="@mipmap/ic_launcher_round"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginStart="15dp"
+            android:contentDescription="TODO"
+            tools:ignore="ContentDescription,HardcodedText" />
+
+        <TextView
+            android:id="@+id/app_name"
+            android:text="@string/app_name"
+            android:textSize="30sp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:layout_toEndOf="@id/app_icon"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relative_2"
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:layout_below="@+id/relative_1"
+        android:background="@drawable/border_bottom">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:baselineAligned="false">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_weight="1.0"
+                android:gravity="center"
+                android:layout_marginStart="50dp">
+
+                <TextView
+                    android:id="@+id/hour_up"
+                    android:text="11"
+                    android:textSize="20sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:gravity="center"
+                    tools:ignore="NestedWeights" />
+
+                <TextView
+                    android:id="@+id/hour_set"
+                    android:text="12"
+                    android:textSize="30sp"
+                    android:textColor="@color/blue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border_top_bottom"
+                    android:layout_weight="1.0"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:id="@+id/hour_down"
+                    android:text="13"
+                    android:textSize="20sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:gravity="center"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_weight="1.0"
+                android:gravity="center"
+                android:layout_marginEnd="50dp">
+
+                <TextView
+                    android:id="@+id/minute_up"
+                    android:text="29"
+                    android:textSize="20sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:gravity="center"
+                    tools:ignore="NestedWeights" />
+
+                <TextView
+                    android:id="@+id/minute_set"
+                    android:text="30"
+                    android:textSize="30sp"
+                    android:textColor="@color/blue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border_top_bottom"
+                    android:layout_weight="1.0"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:id="@+id/minute_down"
+                    android:text="31"
+                    android:textSize="20sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:gravity="center"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/clock_redo_layout"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_below="@id/relative_2"
+        android:background="@drawable/border_bottom">
+
+        <TextView
+            android:id="@+id/relative_3_1"
+            android:text="重复"
+            android:textSize="25sp"
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"/>
+
+        <TextView
+            android:id="@+id/clock_redo"
+            android:textSize="20sp"
+            android:text="@string/period"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center|right"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:layout_toEndOf="@id/relative_3_1"
+            android:layout_marginEnd="50dp"
+            tools:ignore="RtlHardcoded" />
+
+        <ImageView
+            android:id="@+id/clock_rode_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginStart="-50dp"
+            android:layout_marginTop="20dp"
+            android:layout_toEndOf="@id/clock_redo"
+            android:background="@drawable/enable_off_press_arrows_right"
+            android:gravity="center"
+            tools:ignore="ContentDescription" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/clock_label_layout"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_below="@id/clock_redo_layout"
+        android:background="@drawable/border_bottom">
+
+        <TextView
+            android:id="@+id/relative_4_1"
+            android:text="标签"
+            android:textSize="25sp"
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"/>
+
+        <TextView
+            android:id="@+id/clock_label"
+            android:textSize="20sp"
+            android:text="@string/app_name"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center|right"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:layout_toRightOf="@id/relative_4_1"
+            android:layout_marginEnd="50dp"
+            tools:ignore="RtlHardcoded" />
+
+        <ImageButton
+            android:id="@+id/clock_label_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginStart="-50dp"
+            android:layout_marginTop="20dp"
+            android:layout_toEndOf="@id/clock_label"
+            android:background="@drawable/enable_off_press_arrows_right"
+            android:gravity="center"
+            tools:ignore="ContentDescription" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">任务Clock</string>
+    <string name="title_home">主页</string>
+    <string name="title_appList">应用列表</string>
+    <string name="title_setting">闹铃设置</string>
+    <string name="app_list">选择需要制定任务的APP</string>
+
+    <string name="dummy_content">任务Clock</string>
+    <string name="FormulateActivityTitle">任务制定</string>
+
+    <string name="period">选择周期</string>
+    <string-array name="period_kind">
+        <item>每天</item>
+        <item>按周</item>
+        <item>按月</item>
+        <item>其他</item>
+    </string-array>
+</resources>
