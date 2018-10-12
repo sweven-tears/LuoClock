@@ -3,7 +3,6 @@ package com.sweven.clock;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -22,6 +21,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.sweven.clock.base.BaseActivity;
 import com.sweven.clock.listener.CustomListener;
 import com.sweven.clock.utils.LogUtil;
 import com.sweven.clock.utils.ToastUtil;
@@ -38,7 +38,7 @@ import static com.sweven.clock.parameter.RedoParameter.PERIOD_NULL;
 import static com.sweven.clock.parameter.RedoParameter.PERIOD_OTHER;
 import static com.sweven.clock.parameter.RedoParameter.PERIOD_WEEKLY;
 
-public class RedoActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, CompoundButton.OnCheckedChangeListener, View.OnClickListener {
+public class RedoActivity extends BaseActivity implements AdapterView.OnItemSelectedListener, CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
     private LinearLayout redoLayout, periodLayout;
     private Spinner periodSelect;
@@ -46,7 +46,7 @@ public class RedoActivity extends AppCompatActivity implements AdapterView.OnIte
     private LinearLayout periodWeeklyPanel, periodMonthlyPanel, periodOtherPanel;
     private TextView periodText;
     private LinearLayout weeklyLayout;
-    private TableLayout tableView;
+    private TableLayout monthlyTable;
     private TextView doubtImage;
     private EditText otherEdit;
 
@@ -62,16 +62,14 @@ public class RedoActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_redo);
 
-        initID();
+        bindViewId();
         initPeriod();
         initListener();
         initData();
     }
 
-    /**
-     * [配置ID资源]
-     */
-    private void initID() {
+    @Override
+    protected void bindViewId() {
 
         periodLayout = findViewById(R.id.period_layout);
         periodSelect = findViewById(R.id.period_select);
@@ -87,7 +85,7 @@ public class RedoActivity extends AppCompatActivity implements AdapterView.OnIte
 
         weeklyLayout = findViewById(R.id.period_weekly_layout);
 
-        tableView = findViewById(R.id.period_monthly_table);
+        monthlyTable = findViewById(R.id.period_monthly_table);
         doubtImage = findViewById(R.id.period_monthly_doubt);
 
         otherEdit = findViewById(R.id.period_other_edit);
@@ -133,12 +131,12 @@ public class RedoActivity extends AppCompatActivity implements AdapterView.OnIte
             CustomListener touchListener = new CustomListener();
             touchListener.setOnPressListener(
                     (view) -> {
-                        LinearLayout linearLayout= (LinearLayout) view;
+                        LinearLayout linearLayout = (LinearLayout) view;
                         linearLayout.setBackgroundResource(R.color.gray_cc);
                     });
             touchListener.setOnExceptPressListener(
                     (view) -> {
-                        LinearLayout linearLayout= (LinearLayout) view;
+                        LinearLayout linearLayout = (LinearLayout) view;
                         linearLayout.setBackgroundResource(R.drawable.border_bottom);
                     });
             touchListener.setOnUpListener(
@@ -214,7 +212,7 @@ public class RedoActivity extends AppCompatActivity implements AdapterView.OnIte
                     row.removeView(textView);
                 }
             }
-            tableView.addView(row);
+            monthlyTable.addView(row);
         }
     }
 
@@ -248,10 +246,8 @@ public class RedoActivity extends AppCompatActivity implements AdapterView.OnIte
         periodSelect.setAdapter(arrayAdapter);
     }
 
-    /**
-     * [初始化数据]
-     */
-    private void initData() {
+    @Override
+    protected void initData() {
         Intent intent = getIntent();
         if (intent != null) {
             String period = intent.getStringExtra(BUNDLE_PERIOD);
@@ -434,7 +430,7 @@ public class RedoActivity extends AppCompatActivity implements AdapterView.OnIte
             //清除“每月”选中的选项
             case PERIOD_MONTHLY:
                 for (int m = 1; m < 6; m++) {
-                    ViewGroup group = (ViewGroup) tableView.getChildAt(m);
+                    ViewGroup group = (ViewGroup) monthlyTable.getChildAt(m);
                     TextView textView;
                     if (m < 5) {
                         for (int n = 1; n <= 7; n++) {

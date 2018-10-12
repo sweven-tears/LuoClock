@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sweven.clock.adapter.AppAdapter;
+import com.sweven.clock.base.BaseActivity;
 import com.sweven.clock.info.AppMsg;
 import com.sweven.clock.listener.ClockOnTouch;
 import com.sweven.clock.parameter.RedoParameter;
@@ -30,7 +31,7 @@ import static com.sweven.clock.parameter.RedoParameter.PERIOD_NULL;
 import static com.sweven.clock.parameter.RedoParameter.PERIOD_OTHER;
 import static com.sweven.clock.parameter.RedoParameter.PERIOD_WEEKLY;
 
-public class FormulateActivity extends AppCompatActivity implements ClockOnTouch.ListenerImage {
+public class FormulateActivity extends BaseActivity implements ClockOnTouch.ListenerImage {
 
     private TextView appName;
     private ImageView appIcon;
@@ -62,7 +63,7 @@ public class FormulateActivity extends AppCompatActivity implements ClockOnTouch
         }
 
         initIntent();
-        initID();
+        bindViewId();
         initData();
         initListener();
 
@@ -82,10 +83,8 @@ public class FormulateActivity extends AppCompatActivity implements ClockOnTouch
         app.add(new AppMsg(icon, appName, packageName, ""));
     }
 
-    /**
-     * 初始化组件的id
-     */
-    private void initID() {
+    @Override
+    protected void bindViewId() {
         appIcon = findViewById(R.id.app_icon);
         appName = findViewById(R.id.app_name);
 
@@ -106,13 +105,9 @@ public class FormulateActivity extends AppCompatActivity implements ClockOnTouch
         clockLabelImage = findViewById(R.id.clock_label_image);
     }
 
-    /**
-     * [初始化数据]
-     */
     @SuppressLint({"ClickableViewAccessibility"})
-    private void initData() {
-
-
+    @Override
+    protected void initData() {
         appIcon.setImageDrawable(app.get(0).getIcon());
         this.appName.setText(app.get(0).getAppName());
 

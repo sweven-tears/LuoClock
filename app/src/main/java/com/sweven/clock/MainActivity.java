@@ -6,8 +6,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
@@ -16,16 +14,15 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.sweven.clock.adapter.AppAdapter;
+import com.sweven.clock.base.BaseActivity;
 import com.sweven.clock.info.AppMsg;
 import com.sweven.clock.info.AppUtil;
 import com.sweven.clock.utils.ToastUtil;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BaseActivity
         implements BottomNavigationView.OnNavigationItemSelectedListener {
-
-    private ActionBar actionBar;
 
     private RecyclerView recyclerView;
 
@@ -100,19 +97,16 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        actionBar = getSupportActionBar();
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
 
         initData();
     }
 
-    /**
-     * 初始化数据
-     */
-    private void initData() {
+    @Override
+    protected void initData() {
 
-        AppUtil appUtil = new AppUtil(MainActivity.this);
+        AppUtil appUtil = new AppUtil(activity);
         appList = new ArrayList<>();
         appList = appUtil.getAllApp();
 
@@ -121,7 +115,7 @@ public class MainActivity extends AppCompatActivity
         layoutSetting = findViewById(R.id.id_setting);
 
         recyclerView = findViewById(R.id.app_list);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(activity);
         recyclerView.setLayoutManager(layoutManager);
 
         // 设置页面
@@ -153,7 +147,7 @@ public class MainActivity extends AppCompatActivity
      * 为list页面设置数据
      */
     private void setListData() {
-        AppAdapter appAdapter = new AppAdapter(MainActivity.this, appList);
+        AppAdapter appAdapter = new AppAdapter(activity, appList);
         recyclerView.setAdapter(appAdapter);
         listState = LOADED;
     }
@@ -175,13 +169,13 @@ public class MainActivity extends AppCompatActivity
         layoutList.setVisibility(View.INVISIBLE);
         layoutSetting.setVisibility(View.INVISIBLE);
         if (panelID == 1) {
-            actionBar.setTitle(R.string.app_name);
+            setActionBarTitle(R.string.app_name);
             layoutHome.setVisibility(View.VISIBLE);
         } else if (panelID == 2) {
-            actionBar.setTitle(R.string.app_list);
+            setActionBarTitle(R.string.app_list);
             layoutList.setVisibility(View.VISIBLE);
         } else {
-            actionBar.setTitle(R.string.title_setting);
+            setActionBarTitle(R.string.title_setting);
             layoutSetting.setVisibility(View.VISIBLE);
         }
     }
@@ -199,7 +193,7 @@ public class MainActivity extends AppCompatActivity
             long secondTime = System.currentTimeMillis();
             if (secondTime - firstExitTime > 2000) {
                 firstExitTime = secondTime;
-                ToastUtil.showShort(MainActivity.this,"再按一次退出");
+                ToastUtil.showShort(activity, "再按一次退出");
             } else {
                 presentPanel = HOME;
                 finish();
