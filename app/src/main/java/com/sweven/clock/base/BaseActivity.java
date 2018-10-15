@@ -28,20 +28,40 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 标记标题左右两边的类型:文字
      */
-    protected final int KEY_TYPE_TEXT = 0;
+    protected final int BTN_TYPE_TEXT = 0;
     /**
      * 标记标题左右两边的类型:图片
      */
-    protected final int KEY_TYPE_IMG = 1;
+    protected final int BTN_TYPE_IMG = 1;
 
-    private boolean leftButton=true;
-    private boolean rightButton=true;
+    /**
+     * 标记左边按键的显示状态
+     */
+    private boolean leftButton = true;
+    /**
+     * 标记右边按键的显示状态
+     */
+    private boolean rightButton = true;
 
 
     public Activity activity;
 
     private RelativeLayout layoutLeft;
     private RelativeLayout layoutRight;
+
+    /**
+     * 枚举：左右按钮
+     */
+    protected enum KeyKind {
+        /**
+         * 标记左边的按键
+         */
+        ACTIONBAR_LEFT,
+        /**
+         * 标记右边的按键
+         */
+        ACTIONBAR_RIGHT
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -106,66 +126,22 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    protected void showLeftButton() {
-        if (!leftButton) {
-            leftButton = true;
-            layoutLeft.setVisibility(View.VISIBLE);
-            setActionBar(KeyKind.ACTIONBAR_LEFT, KEY_TYPE_IMG, R.drawable.ic_back_left_white_48dp);
-        }
-    }
-
-    protected void showRightButton() {
-        if (!rightButton) {
-            rightButton = true;
-            layoutRight.setVisibility(View.VISIBLE);
-            setActionBar(KeyKind.ACTION_RIGHT, KEY_TYPE_TEXT, "完成");
-        }
-    }
-
-    protected void hiddenLeftButton() {
-        if (leftButton) {
-            leftButton = false;
-            layoutLeft.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    protected void hiddenRightButton() {
-        if (rightButton) {
-            rightButton = false;
-            layoutRight.setVisibility(View.INVISIBLE);
-        }
-    }
-
     /**
-     * 枚举：左右按钮
-     */
-    protected enum KeyKind {
-        /**
-         * 标记左边的按键
-         */
-        ACTIONBAR_LEFT,
-        /**
-         * 标记右边的按钮
-         */
-        ACTION_RIGHT
-    }
-
-    /**
-     * @param type   类型
+     * @param btnType   类型
      *               (Image、Text)
      * @param object 内容
      */
-    protected void setActionBar(KeyKind kind, int type, Object object) {
+    protected void setCustomerActionBar(KeyKind kind, int btnType, Object object) {
         TextView textView = new TextView(activity);
         ImageView imageView = new ImageView(activity);
         if (kind == KeyKind.ACTIONBAR_LEFT) {
             textView = findViewById(R.id.text_title_left);
             imageView = findViewById(R.id.image_title_left);
-        } else if (kind == KeyKind.ACTION_RIGHT) {
+        } else if (kind == KeyKind.ACTIONBAR_RIGHT) {
             textView = findViewById(R.id.text_title_right);
             imageView = findViewById(R.id.image_title_right);
         }
-        if (type == KEY_TYPE_IMG) {
+        if (btnType == BTN_TYPE_IMG) {
             textView.setVisibility(View.INVISIBLE);
             imageView.setVisibility(View.VISIBLE);
 
@@ -183,6 +159,36 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
             } else if (object instanceof Integer) {
                 textView.setText((Integer) object);
             }
+        }
+    }
+
+    protected void showLeftButton() {
+        if (!leftButton) {
+            leftButton = true;
+            layoutLeft.setVisibility(View.VISIBLE);
+            setCustomerActionBar(KeyKind.ACTIONBAR_LEFT, BTN_TYPE_IMG, R.drawable.ic_back_left_white_48dp);
+        }
+    }
+
+    protected void showRightButton() {
+        if (!rightButton) {
+            rightButton = true;
+            layoutRight.setVisibility(View.VISIBLE);
+            setCustomerActionBar(KeyKind.ACTIONBAR_RIGHT, BTN_TYPE_TEXT, "完成");
+        }
+    }
+
+    protected void hiddenLeftButton() {
+        if (leftButton) {
+            leftButton = false;
+            layoutLeft.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    protected void hiddenRightButton() {
+        if (rightButton) {
+            rightButton = false;
+            layoutRight.setVisibility(View.INVISIBLE);
         }
     }
 

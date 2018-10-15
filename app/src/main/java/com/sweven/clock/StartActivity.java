@@ -9,10 +9,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.widget.TextView;
 
+import com.sweven.clock.base.BaseActivity;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class StartActivity extends AppCompatActivity {
+public class StartActivity extends BaseActivity {
 
     /**
      * [延迟启动时间设置,直接启动]
