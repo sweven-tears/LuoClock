@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.widget.ImageView;
@@ -13,9 +12,11 @@ import android.widget.TextView;
 
 import com.sweven.clock.adapter.AppAdapter;
 import com.sweven.clock.base.BaseActivity;
-import com.sweven.clock.info.AppMsg;
+import com.sweven.clock.entity.App;
 import com.sweven.clock.listener.ClockOnTouch;
-import com.sweven.clock.parameter.RedoParameter;
+import com.sweven.clock.parameter.Redo;
+import com.sweven.clock.utils.LogUtil;
+import com.sweven.clock.utils.ToastUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,11 +25,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.sweven.clock.parameter.RedoParameter.PERIOD_DAILY;
-import static com.sweven.clock.parameter.RedoParameter.PERIOD_MONTHLY;
-import static com.sweven.clock.parameter.RedoParameter.PERIOD_NULL;
-import static com.sweven.clock.parameter.RedoParameter.PERIOD_OTHER;
-import static com.sweven.clock.parameter.RedoParameter.PERIOD_WEEKLY;
+import static com.sweven.clock.parameter.Redo.BUNDLE_PERIOD;
+import static com.sweven.clock.parameter.Redo.PERIOD_DAILY;
+import static com.sweven.clock.parameter.Redo.PERIOD_MONTHLY;
+import static com.sweven.clock.parameter.Redo.PERIOD_NULL;
+import static com.sweven.clock.parameter.Redo.PERIOD_OTHER;
+import static com.sweven.clock.parameter.Redo.PERIOD_WEEKLY;
 
 public class FormulateActivity extends BaseActivity implements ClockOnTouch.ListenerImage {
 
@@ -41,7 +43,7 @@ public class FormulateActivity extends BaseActivity implements ClockOnTouch.List
     /**
      * 用Intent传递过来的数据
      */
-    private ArrayList<AppMsg> app;
+    private ArrayList<App> app;
 
     /**
      * 设置时间的六个文本
@@ -56,10 +58,8 @@ public class FormulateActivity extends BaseActivity implements ClockOnTouch.List
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_formulate);
 
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle(R.string.FormulateActivityTitle);
-        }
+        setActionBarTitle("任务制定");
+        showLeftButton();
 
         initIntent();
         bindViewId();
@@ -78,8 +78,17 @@ public class FormulateActivity extends BaseActivity implements ClockOnTouch.List
         byte[] drawableByte = intent.getByteArrayExtra("icon");
         Drawable icon = AppAdapter.byteToDrawable(drawableByte);
 
+        String time = intent.getStringExtra("time");
+        Bundle periodBundle = intent.getBundleExtra("period");
+        String label = intent.getStringExtra("label");
+
+        if (time == null || periodBundle == null || label == null) {
+            log.i("从应用列表打开");
+        } else {
+            log.i("从任务列表打开");
+        }
         app = new ArrayList<>();
-        app.add(new AppMsg(icon, appName, packageName, ""));
+        app.add(new App(icon, appName, packageName, ""));
     }
 
     @Override
@@ -108,7 +117,7 @@ public class FormulateActivity extends BaseActivity implements ClockOnTouch.List
     @Override
     protected void initData() {
         appIcon.setImageDrawable(app.get(0).getIcon());
-        this.appName.setText(app.get(0).getAppName());
+        this.appName.setText(app.get(0).getName());
 
         Date date = new Date(System.currentTimeMillis());
         @SuppressLint("SimpleDateFormat")
@@ -119,7 +128,7 @@ public class FormulateActivity extends BaseActivity implements ClockOnTouch.List
         int hour = Integer.parseInt(time.substring(0, 2));
         int minute = Integer.parseInt(time.substring(3));
 
-        clockRedo.setText("一次");
+        clockRedo.setText(PERIOD_NULL);
         clockLabel.setText("新任务");
 
         // 将所有时间 TextView 打包发送
@@ -143,7 +152,9 @@ public class FormulateActivity extends BaseActivity implements ClockOnTouch.List
 
         clockOnTouch.openRedo(() -> {
             Intent intent = new Intent(FormulateActivity.this, RedoActivity.class);
-            intent.putExtra("period", presentPeriodKind);
+            Bundle bundle=new Bundle();
+            bundle.putString(BUNDLE_PERIOD,presentPeriodKind);
+            intent.putExtras(bundle);
             startActivityForResult(intent, RedoActivity.REQUEST);
         });
 
@@ -167,23 +178,41 @@ public class FormulateActivity extends BaseActivity implements ClockOnTouch.List
         clockLabelLayout.setOnTouchListener(clockOnTouch);
     }
 
+    @Override
+    protected void leftDoWhat() {
+        ToastUtil.showShort(activity, "back");
+        initAlert("提示", "是否保存？", true);
+        mAlert.setPositiveButton("保存", (dialogInterface, i) -> {
+            saveTask();
+            finish();
+        });
+        mAlert.setNegativeButton("不保存", (dialogInterface, i) -> {
+            finish();
+        });
+        showAlert();
+    }
+
+    private void saveTask() {
+
+    }
+
     /**
      * [回传数据：定时任务的定时周期]
      *
-     * @param requestCode .
-     * @param resultCode  .
-     * @param data        .
+     * @param requestCode 请求码
+     * @param resultCode  结果码
+     * @param data        返回的数据
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RedoActivity.RESULT) {
+        if (requestCode == RedoActivity.REQUEST && resultCode == RedoActivity.RESULT) {
             assert data != null;
             Bundle periodBundle = data.getExtras();
             assert periodBundle != null;
-            String period = periodBundle.getString(RedoParameter.BUNDLE_PERIOD);
+            String period = periodBundle.getString(Redo.BUNDLE_PERIOD);
             presentPeriodKind = period;
-            List<Integer> array = periodBundle.getIntegerArrayList(RedoParameter.BUNDLE_ARRAY);
+            List<Integer> array = periodBundle.getIntegerArrayList(Redo.BUNDLE_ARRAY);
             assert period != null;
             period = dealPeriod(period, array);
             clockRedo.setText(period);
@@ -257,7 +286,7 @@ public class FormulateActivity extends BaseActivity implements ClockOnTouch.List
     }
 
     /**
-     * [确认任务后将 period_kind 重新初始化]
+     * [确认任务后将所有临时数据清空]
      */
     @Override
     protected void onStop() {
@@ -289,5 +318,10 @@ public class FormulateActivity extends BaseActivity implements ClockOnTouch.List
                 }
                 break;
         }
+    }
+
+    @Override
+    protected void onBack() {
+        leftDoWhat();
     }
 }

@@ -2,6 +2,8 @@ package com.sweven.clock.base;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -10,13 +12,19 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sweven.clock.R;
 import com.sweven.clock.utils.LogUtil;
+import com.sweven.clock.utils.ToastUtil;
 
 /**
  * Created by Sweven on 2018/10/12.
@@ -34,34 +42,42 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
      */
     protected final int BTN_TYPE_IMG = 1;
 
-    /**
-     * 标记左边按键的显示状态
-     */
-    private boolean leftButton = true;
-    /**
-     * 标记右边按键的显示状态
-     */
-    private boolean rightButton = true;
-
 
     public Activity activity;
 
+    /**
+     * 左边按键的父组件
+     */
     private RelativeLayout layoutLeft;
+    /**
+     * 右边按键的父组件
+     */
     private RelativeLayout layoutRight;
 
+    protected final String TAG = this.getClass().getSimpleName();
+
     /**
-     * 枚举：左右按钮
+     * Dialog提示框
      */
-    protected enum KeyKind {
-        /**
-         * 标记左边的按键
-         */
-        ACTIONBAR_LEFT,
-        /**
-         * 标记右边的按键
-         */
-        ACTIONBAR_RIGHT
-    }
+    private Dialog mDialog;
+    /**
+     * Dialog TextView
+     */
+    private TextView dialogLoadText;
+    /**
+     * Dialog imageView
+     */
+    private ImageView dialogLoadImage;
+    /**
+     * Dialog进度条
+     */
+    private ProgressBar dialogLoadProgress;
+    /**
+     * Alert提示框
+     */
+    protected AlertDialog.Builder mAlert;
+    protected LogUtil log;
+    protected ToastUtil toast;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,7 +103,8 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void init() {
 
-        new LogUtil(this.toString());
+        log=new LogUtil(TAG);
+        toast=new ToastUtil(activity);
 
         // 设置字体大小不随系统字体大小的改变而改变
         Resources res = super.getResources();
@@ -109,6 +126,12 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
         // 默认左右两边的按键都不显示
         hiddenLeftButton();
         hiddenRightButton();
+
+        // 初始化左右按键
+        setCustomerActionBar(KeyKind.ACTIONBAR_LEFT, BTN_TYPE_IMG, R.drawable.ic_back_left_white_48dp);
+        setCustomerActionBar(KeyKind.ACTIONBAR_RIGHT, BTN_TYPE_TEXT, "完成");
+
+        initDialog();
     }
 
     /**
@@ -127,9 +150,9 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * @param btnType   类型
-     *               (Image、Text)
-     * @param object 内容
+     * @param btnType 类型
+     *                (Image、Text)
+     * @param object  内容
      */
     protected void setCustomerActionBar(KeyKind kind, int btnType, Object object) {
         TextView textView = new TextView(activity);
@@ -162,70 +185,175 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    /**
+     * 显示actionbar左边按键
+     */
     protected void showLeftButton() {
-        if (!leftButton) {
-            leftButton = true;
-            layoutLeft.setVisibility(View.VISIBLE);
-            setCustomerActionBar(KeyKind.ACTIONBAR_LEFT, BTN_TYPE_IMG, R.drawable.ic_back_left_white_48dp);
-        }
+        layoutLeft.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * 显示actionbar右边按键
+     */
     protected void showRightButton() {
-        if (!rightButton) {
-            rightButton = true;
-            layoutRight.setVisibility(View.VISIBLE);
-            setCustomerActionBar(KeyKind.ACTIONBAR_RIGHT, BTN_TYPE_TEXT, "完成");
-        }
+        layoutRight.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * 隐藏左边的按键
+     */
     protected void hiddenLeftButton() {
-        if (leftButton) {
-            leftButton = false;
-            layoutLeft.setVisibility(View.INVISIBLE);
-        }
+        layoutLeft.setVisibility(View.INVISIBLE);
     }
 
+    /**
+     * 隐藏右边的按键
+     */
     protected void hiddenRightButton() {
-        if (rightButton) {
-            rightButton = false;
-            layoutRight.setVisibility(View.INVISIBLE);
-        }
+        layoutRight.setVisibility(View.INVISIBLE);
     }
 
+    /**
+     * 点击左边按键的监听器
+     */
     private void leftDo() {
         layoutLeft.setOnClickListener(view -> leftDoWhat());
     }
 
+    /**
+     * 左边按键的监听事件
+     */
     protected void leftDoWhat() {
         BaseActivity.this.finish();
     }
 
+    /**
+     * 点击右边按键的监听器
+     */
     private void rightDo() {
         layoutRight.setOnClickListener(view -> rightDoWhat());
     }
 
+    /**
+     * 右边按键的监听事件
+     */
     protected void rightDoWhat() {
 
     }
 
-    public boolean isLeftButton() {
-        return leftButton;
+    /**
+     * 初始化Dialog
+     */
+    private void initDialog() {
+        mDialog = new Dialog(this, R.style.Theme_AppCompat_Dialog);
+        View mDialogContentView = LayoutInflater.from(this).inflate(R.layout.dialog_loading, null);
+        dialogLoadText = mDialogContentView.findViewById(R.id.load_text);
+        dialogLoadImage = mDialogContentView.findViewById(R.id.load_image);
+        dialogLoadProgress = mDialogContentView.findViewById(R.id.load_progress);
+        mDialog.setCanceledOnTouchOutside(false);
+        mDialog.setContentView(mDialogContentView);
+        Window window = mDialog.getWindow();
+        if (null != window) {
+            window.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
+        }
     }
 
-    public void setLeftButton(boolean leftButton) {
-        this.leftButton = leftButton;
+    /**
+     * 显示Dialog
+     */
+    public void showProgressDialog() {
+        if (mDialog != null && !mDialog.isShowing()) {
+            dialogLoadProgress.setVisibility(View.VISIBLE);
+            dialogLoadText.setVisibility(View.VISIBLE);
+            dialogLoadImage.setVisibility(View.GONE);
+            dialogLoadText.setText("加载中……");
+            mDialog.show();
+        }
     }
 
-    public boolean isRightButton() {
-        return rightButton;
+    /**
+     * 关闭Dialog
+     */
+    public void dismissDialog() {
+        if (mDialog.isShowing()) {
+            mDialog.dismiss();
+        }
     }
 
-    public void setRightButton(boolean rightButton) {
-        this.rightButton = rightButton;
+    /**
+     * [初始设置Alert]
+     *
+     * @param iconId   图标
+     * @param title    标题
+     * @param message  显示信息
+     * @param isCancel 是否设置取消
+     */
+    protected void initAlert(int iconId, String title, String message, boolean isCancel) {
+        mAlert = new AlertDialog.Builder(activity);
+        mAlert.setIcon(iconId);
+        mAlert.setTitle(title);
+        mAlert.setMessage(message);
+
+        mAlert.setCancelable(isCancel);
+        mAlert.create();
+    }
+
+    /**
+     * [初始设置Alert]
+     *
+     * @param title    标题
+     * @param message  显示信息
+     * @param isCancel 是否设置取消
+     */
+    protected void initAlert(String title, String message, boolean isCancel) {
+        mAlert = new AlertDialog.Builder(activity);
+        mAlert.setTitle(title);
+        mAlert.setMessage(message);
+
+        mAlert.setCancelable(isCancel);
+        mAlert.create();
+    }
+
+    /**
+     * 显示Alert
+     */
+    protected void showAlert() {
+        if (mAlert != null) {
+            mAlert.show();
+        }
     }
 
     @Override
     public void onClick(View view) {
 
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            onBack();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    protected void onBack() {
+
+    }
+
+    //---------------------------------------枚举----------------------------------------//
+    /**
+     * 枚举：左右按钮
+     */
+    protected enum KeyKind {
+        /**
+         * 标记左边的按键
+         */
+        ACTIONBAR_LEFT,
+        /**
+         * 标记右边的按键
+         */
+        ACTIONBAR_RIGHT
+    }
+
+
 }

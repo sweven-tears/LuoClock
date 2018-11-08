@@ -7,46 +7,67 @@ import android.util.Log;
  * Email:sweventears@Foxmail.com
  */
 public class LogUtil {
-    private static String TAG = "Activity";
-    private static boolean show = true;
+    private String TAG = "Activity";
+
+    private boolean show = true;
 
     public LogUtil(String TAG) {
-        LogUtil.TAG = TAG;
+        this.TAG = TAG;
     }
 
-    public static void v(String msg) {
-        if (show) {
+    /**
+     * 打印意义最小的日志信息
+     * @param msg 需要记录的信息
+     */
+    public void v(String msg) {
+        if (isShow()) {
             Log.v(TAG + "-------->>", msg);
         } else {
             Log.v(TAG + "-------->>", "Log记录已关闭");
         }
     }
 
-    public static void d(String msg) {
-        if (show) {
+    /**
+     * 打印调试信息
+     * @param msg 需要记录的信息
+     */
+    public void d(String msg) {
+        if (isShow()) {
             Log.d(TAG + "-------->>", msg);
         } else {
             Log.v(TAG + "-------->>", "Log记录已关闭");
         }
     }
 
-    public static void i(String msg) {
-        if (show) {
+    /**
+     * 打印重要数据
+     * @param msg 需要记录的信息
+     */
+    public void i(String msg) {
+        if (isShow()) {
             Log.i(TAG + "-------->>", msg);
         } else {
             Log.v(TAG + "-------->>", "Log记录已关闭");
         }
     }
 
-    public static void w(String msg) {
-        if (show) {
+    /**
+     * 打印警告信息，程序可能存在潜在风险
+     * @param msg 需要记录的信息
+     */
+    public void w(String msg) {
+        if (isShow()) {
             Log.w(TAG + "-------->>", msg);
         } else {
             Log.v(TAG + "-------->>", "Log记录已关闭");
         }
     }
 
-    public static void e(String msg) {
+    /**
+     * 打印错误信息
+     * @param msg 需要记录的信息
+     */
+    public void e(String msg) {
         if (show) {
             Log.e(TAG + "-------->>", msg);
         } else {
@@ -54,7 +75,11 @@ public class LogUtil {
         }
     }
 
-    public static void a(String msg) {
+    /**
+     * 打印最严重的信息
+     * @param msg 需要记录的信息
+     */
+    public void a(String msg) {
         if (show) {
             Log.wtf(TAG + "-------->>", msg);
         } else {
@@ -62,15 +87,23 @@ public class LogUtil {
         }
     }
 
-    public static void show() {
-        if (!show) {
-            show = true;
+    public boolean isShow() {
+        return show;
+    }
+
+    public void setShow(boolean show) {
+        this.show = show;
+    }
+
+    public void show() {
+        if (!isShow()) {
+            setShow(true);
         }
     }
 
-    public static void hidden() {
-        if (show) {
-            show = false;
+    public void hidden() {
+        if (isShow()) {
+            setShow(false);
         }
     }
 }

@@ -28,17 +28,20 @@ import com.sweven.clock.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
-import static com.sweven.clock.parameter.RedoParameter.BUNDLE_ARRAY;
-import static com.sweven.clock.parameter.RedoParameter.BUNDLE_PERIOD;
-import static com.sweven.clock.parameter.RedoParameter.PERIOD_DAILY;
-import static com.sweven.clock.parameter.RedoParameter.PERIOD_KIND;
-import static com.sweven.clock.parameter.RedoParameter.PERIOD_MONTHLY;
-import static com.sweven.clock.parameter.RedoParameter.PERIOD_NULL;
-import static com.sweven.clock.parameter.RedoParameter.PERIOD_OTHER;
-import static com.sweven.clock.parameter.RedoParameter.PERIOD_WEEKLY;
+import static com.sweven.clock.parameter.Redo.BUNDLE;
+import static com.sweven.clock.parameter.Redo.BUNDLE_ARRAY;
+import static com.sweven.clock.parameter.Redo.BUNDLE_PERIOD;
+import static com.sweven.clock.parameter.Redo.PERIOD_DAILY;
+import static com.sweven.clock.parameter.Redo.PERIOD_KIND;
+import static com.sweven.clock.parameter.Redo.PERIOD_MONTHLY;
+import static com.sweven.clock.parameter.Redo.PERIOD_NULL;
+import static com.sweven.clock.parameter.Redo.PERIOD_OTHER;
+import static com.sweven.clock.parameter.Redo.PERIOD_WEEKLY;
 
-public class RedoActivity extends BaseActivity implements AdapterView.OnItemSelectedListener, CompoundButton.OnCheckedChangeListener, View.OnClickListener {
+public class RedoActivity extends BaseActivity implements AdapterView.OnItemSelectedListener, CompoundButton.OnCheckedChangeListener {
 
     private LinearLayout redoLayout, periodLayout;
     private Spinner periodSelect;
@@ -52,7 +55,7 @@ public class RedoActivity extends BaseActivity implements AdapterView.OnItemSele
 
     public static final int RESULT = 201, REQUEST = 202;
 
-    private static ArrayList<Integer> periodArray;
+    private static List<Integer> periodArray;
     private static Bundle periodBundle;
     private String[] week;
 
@@ -250,8 +253,10 @@ public class RedoActivity extends BaseActivity implements AdapterView.OnItemSele
     protected void initData() {
         Intent intent = getIntent();
         if (intent != null) {
-            String period = intent.getStringExtra(BUNDLE_PERIOD);
-            if (period.equals(PERIOD_NULL)) {
+            periodBundle=intent.getExtras();
+            assert periodBundle != null;
+            String period = periodBundle.getString(BUNDLE_PERIOD);
+            if (Objects.requireNonNull(period).equals(PERIOD_NULL)) {
                 redoSwitch.setChecked(false);
             } else {
                 redoSwitch.setChecked(true);
@@ -507,8 +512,7 @@ public class RedoActivity extends BaseActivity implements AdapterView.OnItemSele
                     try {
                         periodArray.add(Integer.valueOf(otherEdit.getText().toString()));
                     } catch (NumberFormatException e) {
-                        new LogUtil("RedoActivity");
-                        LogUtil.v("输入框未输入任何内容");
+                        log.v("输入框未输入任何内容");
                     }
                 }
             } else {
@@ -516,7 +520,7 @@ public class RedoActivity extends BaseActivity implements AdapterView.OnItemSele
             }
             Collections.sort(periodArray);
             periodBundle.putString(BUNDLE_PERIOD, period);
-            periodBundle.putIntegerArrayList(BUNDLE_ARRAY, periodArray);
+            periodBundle.putIntegerArrayList(BUNDLE_ARRAY, (ArrayList<Integer>) periodArray);
             intent.putExtras(periodBundle);
             setResult(RESULT, intent);
         }

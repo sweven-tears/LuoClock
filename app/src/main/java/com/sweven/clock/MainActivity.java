@@ -1,6 +1,7 @@
 package com.sweven.clock;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,8 +16,8 @@ import android.widget.RelativeLayout;
 
 import com.sweven.clock.adapter.AppAdapter;
 import com.sweven.clock.base.BaseActivity;
-import com.sweven.clock.info.AppMsg;
-import com.sweven.clock.info.AppUtil;
+import com.sweven.clock.entity.App;
+import com.sweven.clock.utils.AppUtil;
 import com.sweven.clock.utils.ToastUtil;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class MainActivity extends BaseActivity
 
     private RecyclerView recyclerView;
 
-    private ArrayList<AppMsg> appList;
+    private ArrayList<App> appList;
 
     /**
      * 三个页面的布局

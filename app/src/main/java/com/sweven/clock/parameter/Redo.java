@@ -7,7 +7,8 @@ import java.util.List;
  * Created by Sweven on 2018/10/10.
  * Email:sweventears@Foxmail.com
  */
-public class RedoParameter {
+public class Redo {
+    public static final String BUNDLE="bundle";
     public static final String BUNDLE_PERIOD = "period";
     public static final String BUNDLE_ARRAY = "array";
     public static final String PERIOD_NULL="一次";

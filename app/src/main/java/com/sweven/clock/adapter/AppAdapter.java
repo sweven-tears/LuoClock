@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 import com.sweven.clock.FormulateActivity;
 import com.sweven.clock.R;
-import com.sweven.clock.info.AppMsg;
+import com.sweven.clock.entity.App;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -36,12 +36,12 @@ import java.util.Map;
 public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ListViewHolder> {
 
     private Context context;
-    private ArrayList<AppMsg> appMsgs;
+    private ArrayList<App> apps;
     private LayoutInflater inflater;
 
-    public AppAdapter(Context context, ArrayList<AppMsg> appData) {
+    public AppAdapter(Context context, ArrayList<App> appData) {
         this.context=context;
-        this.appMsgs=appData;
+        this.apps =appData;
         this.inflater= LayoutInflater.from(context);
     }
 
@@ -54,14 +54,14 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ListViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ListViewHolder holder, int position) {
-        AppMsg appMsg=appMsgs.get(position);
-        holder.appName.setText(appMsg.getAppName());
-        holder.appIcon.setImageDrawable(appMsg.getIcon());
+        App app = apps.get(position);
+        holder.appName.setText(app.getName());
+        holder.appIcon.setImageDrawable(app.getIcon());
     }
 
     @Override
     public int getItemCount() {
-        return appMsgs.size();
+        return apps.size();
     }
 
     public class ListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -75,7 +75,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ListViewHolder> 
             super(itemView);
             layout =itemView.findViewById(R.id.layout);
 
-            appName=itemView.findViewById(R.id.appName);
+            appName=itemView.findViewById(R.id.name);
             appIcon=itemView.findViewById(R.id.appIcon);
             checkBox=itemView.findViewById(R.id.checkBox);
 
@@ -95,13 +95,13 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ListViewHolder> 
                     List<Map<String,Object>> data=new ArrayList<>();
                     Map<String,Object> item=new HashMap<>();
                     int position=getAdapterPosition();
-                    AppMsg appMsg=appMsgs.get(position);
-                    item.put("appName",appMsg.getAppName());
-                    item.put("appPackageName",appMsg.getPackageName());
+                    App app = apps.get(position);
+                    item.put("appName", app.getName());
+                    item.put("appPackageName", app.getPackageName());
                     data.add(item);
-                    intent.putExtra("appName",appMsg.getAppName());
-                    intent.putExtra("packageName",appMsg.getPackageName());
-                    intent.putExtra("icon", drawableToByte(appMsg.getIcon()));
+                    intent.putExtra("appName", app.getName());
+                    intent.putExtra("packageName", app.getPackageName());
+                    intent.putExtra("icon", drawableToByte(app.getIcon()));
                     context.startActivity(intent);
                 }
                 break;
