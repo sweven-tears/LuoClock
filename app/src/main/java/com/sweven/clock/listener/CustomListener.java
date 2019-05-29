@@ -61,24 +61,6 @@ public class CustomListener implements View.OnTouchListener {
         return true;
     }
 
-    public interface setOnPressListener {
-        void onPress(View view);
-    }
-
-    public interface setOnExceptPressListener {
-        void onExcept(View view);
-    }
-
-
-    public interface setOnMoveListener {
-        void onMove(View view);
-
-    }
-
-    public interface setOnUpliftListener {
-        void onUp(View view);
-    }
-
     public void setOnPressListener(setOnPressListener onPressListener) {
         CustomListener.onPressListener = onPressListener;
     }
@@ -93,5 +75,22 @@ public class CustomListener implements View.OnTouchListener {
 
     public void setOnUpListener(setOnUpliftListener onUpListener) {
         CustomListener.onUpliftListener = onUpListener;
+    }
+
+    public interface setOnPressListener {
+        void onPress(View view);
+    }
+
+    public interface setOnExceptPressListener {
+        void onExcept(View view);
+    }
+
+    public interface setOnMoveListener {
+        void onMove(View view);
+
+    }
+
+    public interface setOnUpliftListener {
+        void onUp(View view);
     }
 }

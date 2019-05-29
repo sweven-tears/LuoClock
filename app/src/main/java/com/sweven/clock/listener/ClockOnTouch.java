@@ -22,26 +22,12 @@ import java.util.TimerTask;
  * Email:sweventears@Foxmail.com
  */
 public class ClockOnTouch implements View.OnTouchListener {
+    private static final int HOUR_TIME = 0, MINUTE_TIME = 1;
+    private static final int MSG_WHAT = 0;
     /**
      * 按下、抬起、移动状态
      */
     private static boolean downState, upState, moveState;
-    /**
-     * 设置时间的六个文本
-     */
-
-    private Context context;
-
-    private TextView hour_up, hour_set, hour_down, minute_up, minute_set, minute_down;
-
-    private RelativeLayout clockRedoLayout, clockLabelLayout;
-
-    private static final int HOUR_TIME = 0, MINUTE_TIME = 1;
-
-    private OpenActivity openRedo = null;
-    private ListenerImage mListenerImage = null;
-
-
     /**
      * onTouch监听事件发生的次数
      * [按下、移动、抬起]三种监听
@@ -50,8 +36,15 @@ public class ClockOnTouch implements View.OnTouchListener {
      * 移动：按下count=1 -> 移动count=2 -> 重置count=0
      */
     private static int touchCount = 0;
+    /**
+     * 设置时间的六个文本
+     */
 
-    private static final int MSG_WHAT = 0;
+    private Context context;
+    private TextView hour_up, hour_set, hour_down, minute_up, minute_set, minute_down;
+    private RelativeLayout clockRedoLayout, clockLabelLayout;
+    private OpenActivity openRedo = null;
+    private ListenerImage mListenerImage = null;
     private Timer timer;
 
     @SuppressLint("HandlerLeak")
@@ -305,20 +298,20 @@ public class ClockOnTouch implements View.OnTouchListener {
         }
     }
 
-    public interface OpenActivity {
-        void open();
-    }
-
-    public interface ListenerImage {
-        void listener(int id, MotionEvent motionEvent);
-    }
-
     public void openRedo(OpenActivity openRedo) {
         this.openRedo = openRedo;
     }
 
     public void setImageListener(ListenerImage listenerImage) {
         this.mListenerImage = listenerImage;
+    }
+
+    public interface OpenActivity {
+        void open();
+    }
+
+    public interface ListenerImage {
+        void listener(int id, MotionEvent motionEvent);
     }
 
 }

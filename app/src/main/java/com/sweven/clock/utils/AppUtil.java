@@ -25,6 +25,28 @@ public class AppUtil {
     }
 
     /**
+     * @param apkPath app包名
+     * @param context context
+     * @return APP图标
+     */
+    public static Drawable getApkFileIcon(String apkPath, Context context) {
+        PackageManager pm = context.getPackageManager();
+        PackageInfo info = pm.getPackageArchiveInfo(apkPath,
+                PackageManager.GET_ACTIVITIES);
+        if (info != null) {
+            ApplicationInfo appInfo = info.applicationInfo;
+            if (appInfo != null) {
+                try {
+                    appInfo.publicSourceDir = apkPath;
+                    return pm.getApplicationIcon(appInfo);
+                } catch (OutOfMemoryError e) {
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * 获取系统中所有应用信息，
      * 并将应用软件信息保存到list列表中。
      **/
@@ -94,27 +116,5 @@ public class AppUtil {
             return true;
         }
         return false;
-    }
-
-    /**
-     * @param apkPath app包名
-     * @param context context
-     * @return APP图标
-     */
-    public static Drawable getApkFileIcon(String apkPath, Context context) {
-        PackageManager pm = context.getPackageManager();
-        PackageInfo info = pm.getPackageArchiveInfo(apkPath,
-                PackageManager.GET_ACTIVITIES);
-        if (info != null) {
-            ApplicationInfo appInfo = info.applicationInfo;
-            if (appInfo != null) {
-                try {
-                    appInfo.publicSourceDir = apkPath;
-                    return pm.getApplicationIcon(appInfo);
-                } catch (OutOfMemoryError e) {
-                }
-            }
-        }
-        return null;
     }
 }

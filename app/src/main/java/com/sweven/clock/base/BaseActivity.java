@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -41,10 +42,14 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
      * 标记标题左右两边的类型:图片
      */
     protected final int BTN_TYPE_IMG = 1;
-
-
+    protected final String TAG = this.getClass().getSimpleName();
     public Activity activity;
-
+    /**
+     * Alert提示框
+     */
+    protected AlertDialog.Builder mAlert;
+    protected LogUtil log;
+    protected ToastUtil toast;
     /**
      * 左边按键的父组件
      */
@@ -53,9 +58,6 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
      * 右边按键的父组件
      */
     private RelativeLayout layoutRight;
-
-    protected final String TAG = this.getClass().getSimpleName();
-
     /**
      * Dialog提示框
      */
@@ -72,12 +74,6 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
      * Dialog进度条
      */
     private ProgressBar dialogLoadProgress;
-    /**
-     * Alert提示框
-     */
-    protected AlertDialog.Builder mAlert;
-    protected LogUtil log;
-    protected ToastUtil toast;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,8 +99,8 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void init() {
 
-        log=new LogUtil(TAG);
-        toast=new ToastUtil(activity);
+        log = new LogUtil(TAG);
+        toast = new ToastUtil(activity);
 
         // 设置字体大小不随系统字体大小的改变而改变
         Resources res = super.getResources();
@@ -128,8 +124,8 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
         hiddenRightButton();
 
         // 初始化左右按键
-        setCustomerActionBar(KeyKind.ACTIONBAR_LEFT, BTN_TYPE_IMG, R.drawable.ic_back_left_white_48dp);
-        setCustomerActionBar(KeyKind.ACTIONBAR_RIGHT, BTN_TYPE_TEXT, "完成");
+        setCustomerActionBar(KeyActionBarButtonKind.ACTIONBAR_LEFT, BTN_TYPE_IMG, R.drawable.ic_back_left_white_48dp);
+        setCustomerActionBar(KeyActionBarButtonKind.ACTIONBAR_RIGHT, BTN_TYPE_TEXT, "完成");
 
         initDialog();
     }
@@ -154,13 +150,13 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
      *                (Image、Text)
      * @param object  内容
      */
-    protected void setCustomerActionBar(KeyKind kind, int btnType, Object object) {
+    protected void setCustomerActionBar(KeyActionBarButtonKind kind, int btnType, Object object) {
         TextView textView = new TextView(activity);
         ImageView imageView = new ImageView(activity);
-        if (kind == KeyKind.ACTIONBAR_LEFT) {
+        if (kind == KeyActionBarButtonKind.ACTIONBAR_LEFT) {
             textView = findViewById(R.id.text_title_left);
             imageView = findViewById(R.id.image_title_left);
-        } else if (kind == KeyKind.ACTIONBAR_RIGHT) {
+        } else if (kind == KeyActionBarButtonKind.ACTIONBAR_RIGHT) {
             textView = findViewById(R.id.text_title_right);
             imageView = findViewById(R.id.image_title_right);
         }
@@ -239,6 +235,22 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
      */
     protected void rightDoWhat() {
 
+    }
+
+    public void startActivity(Class<?> cls) {
+        Intent intent = new Intent(this, cls);
+        super.startActivity(intent);
+    }
+
+    public void startActivity(Class<?> cls, Bundle bundle) {
+        Intent intent = new Intent(this, cls);
+        intent.putExtras(bundle);
+        super.startActivity(intent);
+    }
+
+    public void startActivityForResult(Class<?> cls, int requestCode) {
+        Intent intent = new Intent(this, cls);
+        super.startActivityForResult(intent, requestCode);
     }
 
     /**
@@ -341,10 +353,11 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     //---------------------------------------枚举----------------------------------------//
+
     /**
      * 枚举：左右按钮
      */
-    protected enum KeyKind {
+    protected enum KeyActionBarButtonKind {
         /**
          * 标记左边的按键
          */

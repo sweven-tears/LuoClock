@@ -2,11 +2,10 @@ package com.sweven.clock;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.Message;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
+import android.support.v7.app.ActionBar;
 import android.widget.TextView;
 
 import com.sweven.clock.base.BaseActivity;
@@ -16,15 +15,13 @@ import java.util.TimerTask;
 
 public class StartActivity extends BaseActivity {
 
+    protected static final int MSG_WHAT = 0;
     /**
      * [延迟启动时间设置,直接启动]
      */
     private static final int LAUNCH_APP_TIME = 5000, DIRECT_LAUNCH_APP = 0;
-
     private final Handler mLaunchHandler = new Handler();
-
     private boolean isDirect;
-
     /**
      * 线程启动MainActivity
      */
@@ -33,14 +30,11 @@ public class StartActivity extends BaseActivity {
             Intent intent = new Intent(StartActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
-            isDirect=true;
+            isDirect = true;
         }
     };
-
     private TextView countDown;
     private int time = LAUNCH_APP_TIME / 1000;
-
-    protected static final int MSG_WHAT = 0;
     private Timer timer;
 
 

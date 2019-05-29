@@ -1,7 +1,6 @@
 package com.sweven.clock;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -25,32 +24,18 @@ import java.util.ArrayList;
 public class MainActivity extends BaseActivity
         implements BottomNavigationView.OnNavigationItemSelectedListener {
 
-    private RecyclerView recyclerView;
-
-    private ArrayList<App> appList;
-
-    /**
-     * 三个页面的布局
-     */
-    private RelativeLayout layoutHome, layoutList, layoutSetting;
-
     /**
      * 用于三个页面的切换
      */
     private final static int HOME = 1, LIST = 2, SETTING = 3;
-
     /**
      * 页面加载参数，[0：未加载；1：已加载]
      */
     private static final int NO_LOAD = 0, LOADED = 1;
-
-    private int homeState = NO_LOAD, listState = NO_LOAD, settingSate = NO_LOAD;
-
     /**
      * 设置默认页面
      */
     private static int presentPanel = HOME;
-
     /**
      * 用于判断双击的时间戳
      */
@@ -58,7 +43,13 @@ public class MainActivity extends BaseActivity
     private static long firstHomeTime = 0;
     private static long firstListTime = 0;
     private static long firstSettingTime = 0;
-
+    private RecyclerView recyclerView;
+    private ArrayList<App> appList;
+    /**
+     * 三个页面的布局
+     */
+    private RelativeLayout layoutHome, layoutList, layoutSetting;
+    private int homeState = NO_LOAD, listState = NO_LOAD, settingSate = NO_LOAD;
     /**
      * [页面切换时的操作]
      */

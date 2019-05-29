@@ -3,20 +3,19 @@ package com.sweven.clock;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.Nullable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.sweven.clock.adapter.AppAdapter;
 import com.sweven.clock.base.BaseActivity;
 import com.sweven.clock.entity.App;
 import com.sweven.clock.listener.ClockOnTouch;
+import com.sweven.clock.parameter.Formulate;
 import com.sweven.clock.parameter.Redo;
-import com.sweven.clock.utils.LogUtil;
-import com.sweven.clock.utils.ToastUtil;
+import com.sweven.clock.utils.DrawableUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,26 +31,26 @@ import static com.sweven.clock.parameter.Redo.PERIOD_NULL;
 import static com.sweven.clock.parameter.Redo.PERIOD_OTHER;
 import static com.sweven.clock.parameter.Redo.PERIOD_WEEKLY;
 
+//import com.sweven.clock.base.BaseActivity;
+
 public class FormulateActivity extends BaseActivity implements ClockOnTouch.ListenerImage {
 
+    public static final int RESULT = 101, REQUEST = 102;
+    private static String presentPeriodKind = PERIOD_NULL;
     private TextView appName;
     private ImageView appIcon;
     private RelativeLayout clockRedoLayout, clockLabelLayout;
     private TextView clockRedo, clockLabel;
     private ImageView clockRedoImage, clockLabelImage;
-
     /**
      * 用Intent传递过来的数据
      */
-    private ArrayList<App> app;
-
+    private App app;
     /**
      * 设置时间的六个文本
      */
     private TextView hour_up, hour_set, hour_down, minute_up, minute_set, minute_down;
-
     private ClockOnTouch clockOnTouch;
-    private static String presentPeriodKind = PERIOD_NULL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +58,10 @@ public class FormulateActivity extends BaseActivity implements ClockOnTouch.List
         setContentView(R.layout.activity_formulate);
 
         setActionBarTitle("任务制定");
+        setCustomerActionBar(KeyActionBarButtonKind.ACTIONBAR_LEFT, BTN_TYPE_TEXT, "取消");
+        setCustomerActionBar(KeyActionBarButtonKind.ACTIONBAR_RIGHT, BTN_TYPE_TEXT, "完成");
         showLeftButton();
+        showRightButton();
 
         initIntent();
         bindViewId();
@@ -76,7 +78,7 @@ public class FormulateActivity extends BaseActivity implements ClockOnTouch.List
         String packageName = intent.getStringExtra("packageName");
         String appName = intent.getStringExtra("appName");
         byte[] drawableByte = intent.getByteArrayExtra("icon");
-        Drawable icon = AppAdapter.byteToDrawable(drawableByte);
+        Drawable icon = DrawableUtil.byteToDrawable(drawableByte);
 
         String time = intent.getStringExtra("time");
         Bundle periodBundle = intent.getBundleExtra("period");
@@ -87,8 +89,7 @@ public class FormulateActivity extends BaseActivity implements ClockOnTouch.List
         } else {
             log.i("从任务列表打开");
         }
-        app = new ArrayList<>();
-        app.add(new App(icon, appName, packageName, ""));
+        app = new App(icon, appName, packageName, "");
     }
 
     @Override
@@ -116,8 +117,8 @@ public class FormulateActivity extends BaseActivity implements ClockOnTouch.List
     @SuppressLint({"ClickableViewAccessibility"})
     @Override
     protected void initData() {
-        appIcon.setImageDrawable(app.get(0).getIcon());
-        this.appName.setText(app.get(0).getName());
+        appIcon.setImageDrawable(app.getIcon());
+        this.appName.setText(app.getName());
 
         Date date = new Date(System.currentTimeMillis());
         @SuppressLint("SimpleDateFormat")
@@ -152,8 +153,8 @@ public class FormulateActivity extends BaseActivity implements ClockOnTouch.List
 
         clockOnTouch.openRedo(() -> {
             Intent intent = new Intent(FormulateActivity.this, RedoActivity.class);
-            Bundle bundle=new Bundle();
-            bundle.putString(BUNDLE_PERIOD,presentPeriodKind);
+            Bundle bundle = new Bundle();
+            bundle.putString(BUNDLE_PERIOD, presentPeriodKind);
             intent.putExtras(bundle);
             startActivityForResult(intent, RedoActivity.REQUEST);
         });
@@ -180,7 +181,7 @@ public class FormulateActivity extends BaseActivity implements ClockOnTouch.List
 
     @Override
     protected void leftDoWhat() {
-        ToastUtil.showShort(activity, "back");
+        toast.showShort("back");
         initAlert("提示", "是否保存？", true);
         mAlert.setPositiveButton("保存", (dialogInterface, i) -> {
             saveTask();
@@ -192,8 +193,21 @@ public class FormulateActivity extends BaseActivity implements ClockOnTouch.List
         showAlert();
     }
 
-    private void saveTask() {
+    @Override
+    protected void rightDoWhat() {
+        saveTask();
+        finish();
+    }
 
+    private void saveTask() {
+        Intent intent = new Intent(activity, MainActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(Formulate.CLOCK_APP_NAME, app.getName());
+        bundle.putString(Formulate.CLOCK_APP_PACKAGE_NAME, app.getPackageName());
+//        bundle.putIntegerArrayList(Formulate.CLOCK_APP_ICON,DrawableUtil.drawableToByte(app.getIcon()));
+        bundle.putString(Formulate.CLOCK_LABEL, clockLabel.getText().toString());
+        intent.putExtras(bundle);
+        setResult(RESULT, intent);
     }
 
     /**

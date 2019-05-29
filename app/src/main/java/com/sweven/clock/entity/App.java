@@ -64,9 +64,9 @@ public class App {
                 '}';
     }
 
-    public String toBinaryString(){
-        char[] ch=toString().toCharArray();
-        StringBuilder safe= new StringBuilder();
+    public String toBinaryString() {
+        char[] ch = toString().toCharArray();
+        StringBuilder safe = new StringBuilder();
         for (char aCh : ch) {
             safe.append(Integer.toBinaryString(aCh));
         }
