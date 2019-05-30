@@ -20,15 +20,15 @@ import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.sweven.clock.R
-import com.sweven.clock.utils.LogUtil
-import com.sweven.clock.utils.ToastUtil
+import com.sweven.util.LogUtil
+import com.sweven.util.ToastUtil
 
 /**
  * Created by Sweven on 2019/3/3.
  * Email:sweventears@Foxmail.com
  */
 @SuppressLint("Registered")
-class BaseActivity : AppCompatActivity(), View.OnClickListener {
+class Base : AppCompatActivity(), View.OnClickListener {
 
     /**
      * 标记标题左右两边的类型:文字
@@ -217,7 +217,7 @@ class BaseActivity : AppCompatActivity(), View.OnClickListener {
      * 左边按键的监听事件
      */
     protected fun leftDoWhat() {
-        this@BaseActivity.finish()
+        finish()
     }
 
     /**

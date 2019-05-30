@@ -24,8 +24,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sweven.clock.R;
-import com.sweven.clock.utils.LogUtil;
-import com.sweven.clock.utils.ToastUtil;
+import com.sweven.util.LogUtil;
+import com.sweven.util.ToastUtil;
 
 /**
  * Created by Sweven on 2018/10/12.

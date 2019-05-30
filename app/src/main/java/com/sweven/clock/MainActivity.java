@@ -17,7 +17,7 @@ import com.sweven.clock.adapter.AppAdapter;
 import com.sweven.clock.base.BaseActivity;
 import com.sweven.clock.entity.App;
 import com.sweven.clock.utils.AppUtil;
-import com.sweven.clock.utils.ToastUtil;
+import com.sweven.util.ToastUtil;
 
 import java.util.ArrayList;
 
