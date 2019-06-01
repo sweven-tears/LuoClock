@@ -4,10 +4,13 @@ import android.content.Context;
 import android.os.Handler;
 
 /**
+ * 延时操作
+ * delay默认2000ms
+ * </p>
  * Created by Sweven on 2019/5/3.
  * Email:sweventears@Foxmail.com
  */
-public class WaitUtil {
+public class WaitManager {
     private Handler handler = new Handler();
     private CallBack callBack;
     private Runnable runnable = new Runnable() {
@@ -21,13 +24,12 @@ public class WaitUtil {
     private Context context;
     private long delay = 2000L;
 
-    public WaitUtil(Context context, CallBack callBack) {
+    public WaitManager(Context context, CallBack callBack) {
         this.context = context;
         this.callBack = callBack;
-        start();
     }
 
-    public WaitUtil(Context context, CallBack callBack, Long delay) {
+    public WaitManager(Context context, CallBack callBack, Long delay) {
         this.context = context;
         this.callBack = callBack;
         if (delay == null) {
