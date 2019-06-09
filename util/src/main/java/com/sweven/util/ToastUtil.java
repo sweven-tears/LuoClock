@@ -5,6 +5,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.widget.Toast;
 
+import static com.sweven.util.ToastUtil.Gravity.BOTTOM;
+import static com.sweven.util.ToastUtil.Gravity.CENTER;
+import static com.sweven.util.ToastUtil.Gravity.DEFAULT;
+import static com.sweven.util.ToastUtil.Gravity.TOP;
+import static com.sweven.util.ToastUtil.Gravity.getBottom;
+import static com.sweven.util.ToastUtil.Gravity.getTop;
+
 /**
  * Created by Sweven on 2018/9/15.
  * Email:sweventears@Foxmail.com
@@ -12,11 +19,29 @@ import android.widget.Toast;
  * Toast工具类
  */
 public class ToastUtil {
+
     private static Toast toast;
-    private Activity activity;
+    private Context context;
+
+    // 默认底部
+    private static int gravity = DEFAULT;
 
     public ToastUtil(Activity activity) {
-        this.activity = activity;
+        this.context = activity;
+    }
+
+    public ToastUtil(Context context) {
+        this.context = context;
+    }
+
+    public ToastUtil(Activity activity, int gravity) {
+        this.context = activity;
+        ToastUtil.gravity = gravity;
+    }
+
+    public ToastUtil(Context context, int gravity) {
+        this.context = context;
+        ToastUtil.gravity = gravity;
     }
 
     /**
@@ -33,6 +58,7 @@ public class ToastUtil {
         } else {
             toast.setText(msg);
         }
+        setGravity(context);
         toast.show();
     }
 
@@ -50,6 +76,7 @@ public class ToastUtil {
         } else {
             toast.setText(msg);
         }
+        setGravity(context);
         toast.show();
     }
 
@@ -67,6 +94,7 @@ public class ToastUtil {
         } else {
             toast.setText(resId);
         }
+        setGravity(context);
         toast.show();
     }
 
@@ -84,6 +112,7 @@ public class ToastUtil {
         } else {
             toast.setText(resId);
         }
+        setGravity(context);
         toast.show();
     }
 
@@ -97,40 +126,6 @@ public class ToastUtil {
     }
 
     /**
-     * 对错误操作进行提示，利于编程者阅读
-     * 适用于所有类
-     *
-     * @param context 上下文
-     * @param msg     要显示的文字
-     */
-    @SuppressLint("ShowToast")
-    public static void showError(Context context, String msg) {
-        if (toast == null) {
-            toast = Toast.makeText(context, msg, Toast.LENGTH_SHORT);
-        } else {
-            toast.setText(msg);
-        }
-        toast.show();
-    }
-
-    /**
-     * 对错误操作进行提示，利于编程者阅读
-     * 适用于所有类
-     *
-     * @param context 上下文
-     * @param resId   要显示的文字
-     */
-    @SuppressLint("ShowToast")
-    public static void showError(Context context, int resId) {
-        if (toast == null) {
-            toast = Toast.makeText(context, resId, Toast.LENGTH_SHORT);
-        } else {
-            toast.setText(resId);
-        }
-        toast.show();
-    }
-
-    /**
      * 显示一个较短时间的提示
      * 适用于activity类
      *
@@ -139,10 +134,11 @@ public class ToastUtil {
     @SuppressLint("ShowToast")
     public void showShort(String msg) {
         if (toast == null) {
-            toast = Toast.makeText(activity, msg, Toast.LENGTH_SHORT);
+            toast = Toast.makeText(context, msg, Toast.LENGTH_SHORT);
         } else {
             toast.setText(msg);
         }
+        setGravity(context);
         toast.show();
     }
 
@@ -155,26 +151,11 @@ public class ToastUtil {
     @SuppressLint("ShowToast")
     public void showLong(String msg) {
         if (toast == null) {
-            toast = Toast.makeText(activity, msg, Toast.LENGTH_LONG);
+            toast = Toast.makeText(context, msg, Toast.LENGTH_LONG);
         } else {
             toast.setText(msg);
         }
-        toast.show();
-    }
-
-    /**
-     * 对错误操作进行提示，利于编程者阅读
-     * 适用于activity类
-     *
-     * @param message 要显示的文字
-     */
-    @SuppressLint("ShowToast")
-    public void showError(String message) {
-        if (toast == null) {
-            toast = Toast.makeText(activity, message, Toast.LENGTH_SHORT);
-        } else {
-            toast.setText(message);
-        }
+        setGravity(context);
         toast.show();
     }
 
@@ -187,10 +168,11 @@ public class ToastUtil {
     @SuppressLint("ShowToast")
     public void showShort(int resId) {
         if (toast == null) {
-            toast = Toast.makeText(activity, resId, Toast.LENGTH_SHORT);
+            toast = Toast.makeText(context, resId, Toast.LENGTH_SHORT);
         } else {
             toast.setText(resId);
         }
+        setGravity(context);
         toast.show();
     }
 
@@ -203,26 +185,65 @@ public class ToastUtil {
     @SuppressLint("ShowToast")
     public void showLong(int resId) {
         if (toast == null) {
-            toast = Toast.makeText(activity, resId, Toast.LENGTH_LONG);
+            toast = Toast.makeText(context, resId, Toast.LENGTH_LONG);
         } else {
             toast.setText(resId);
         }
+        setGravity(context);
         toast.show();
     }
 
+    public int getGravity() {
+        return gravity;
+    }
+
+    public static void setGravity(int gravity) {
+        ToastUtil.gravity = gravity;
+    }
+
     /**
-     * 对错误操作进行提示，利于编程者阅读
-     * 适用于activity类
+     * 需要在使用之前设置
+     * 仅需设置一次
      *
-     * @param resId 要显示的文字
+     * @param context 上下文
      */
-    @SuppressLint("ShowToast")
-    public void showError(int resId) {
-        if (toast == null) {
-            toast = Toast.makeText(activity, resId, Toast.LENGTH_SHORT);
-        } else {
-            toast.setText(resId);
+    public static void setGravity(Context context) {
+        if (toast != null) {
+            switch (gravity) {
+                case TOP:
+                    toast.setGravity(android.view.Gravity.TOP, 0, -getTop(context));
+                    break;
+                case CENTER:
+                    toast.setGravity(android.view.Gravity.CENTER, 0, 0);
+                    break;
+                case BOTTOM:
+                    toast.setGravity(android.view.Gravity.BOTTOM, 0, getBottom());
+                    break;
+                default:
+                    toast = null;
+                    break;
+            }
         }
-        toast.show();
+    }
+
+    public static class Gravity {
+        public static final int DEFAULT = -1;
+        public static final int CENTER = 1;
+        public static final int TOP = 2;
+        public static final int BOTTOM = 3;
+
+        private static final int defaultHeight = 50;
+
+        private static int getStatusHeight(Context context) {
+            return WindowUtil.getStatusBarHeight(context);
+        }
+
+        public static int getTop(Context context) {
+            return getStatusHeight(context) + defaultHeight;
+        }
+
+        public static int getBottom() {
+            return defaultHeight * 2;
+        }
     }
 }
