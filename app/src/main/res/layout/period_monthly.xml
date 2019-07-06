@@ -1,43 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/border_bottom"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/safe_distance"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/safe_distance"
+    android:paddingEnd="@dimen/safe_distance">
 
-    <TableLayout
-        android:id="@+id/period_monthly_table"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/rl_calendar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/border_all">
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="15dp">
 
-        <TableRow tools:ignore="UselessParent">
+        <TextView
+            android:id="@+id/calendar_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:textColor="#ff111111"
+            android:textSize="17sp" />
+
+        <View
+            android:id="@+id/view_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/calendar_top"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="12dp"
+            android:background="#CCCCCC" />
+
+        <LinearLayout
+            android:id="@+id/calendar_row_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/view_line"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            android:visibility="gone">
 
             <TextView
-                android:layout_column="2"
-                android:layout_span="3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:gravity="center"
-                android:paddingBottom="15dip"
-                android:paddingTop="15dip"
-                android:text="选择日期"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                tools:ignore="HardcodedText" />
+                android:text="@string/week_one"
+                android:textColor="#ff111111"
+                android:textSize="15sp" />
 
             <TextView
-                android:id="@+id/period_monthly_doubt"
-                android:layout_width="5dp"
-                android:layout_height="30dp"
-                android:layout_column="6"
-                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:gravity="center"
-                android:paddingBottom="15dip"
-                android:paddingTop="15dip"/>
-        </TableRow>
+                android:text="@string/week_two"
+                android:textColor="#ff111111"
+                android:textSize="15sp" />
 
-    </TableLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/week_three"
+                android:textColor="#ff111111"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/week_four"
+                android:textColor="#ff111111"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/week_five"
+                android:textColor="#ff111111"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/week_six"
+                android:textColor="#ff111111"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/week_seven"
+                android:textColor="#ff111111"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/period_monthly_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/calendar_row_top"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
+    </RelativeLayout>
 </LinearLayout>

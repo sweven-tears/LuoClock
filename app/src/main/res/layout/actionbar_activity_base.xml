@@ -8,12 +8,9 @@
 
     <TextView
         android:id="@+id/text_title"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_toStartOf="@+id/layout_title_right"
-        android:layout_toEndOf="@+id/layout_title_left"
+        android:layout_centerInParent="true"
         android:ellipsize="end"
         android:gravity="center"
         android:text="@string/app_name"
@@ -24,14 +21,13 @@
         android:id="@+id/layout_title_left"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        tools:ignore="RtlHardcoded,UseCompoundDrawables">
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/image_title_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:src="@drawable/ic_back_left_white_48dp"
             tools:ignore="ContentDescription" />
 
@@ -39,40 +35,32 @@
             android:id="@+id/text_title_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="back"
             android:textColor="@color/white"
-            android:textSize="16sp"
-            android:visibility="gone"
-            tools:ignore="HardcodedText" />
+            android:textSize="16sp" />
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/layout_title_right"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:gravity="center"
-        android:orientation="horizontal"
-        tools:ignore="RtlHardcoded,UseCompoundDrawables">
+        android:layout_alignParentEnd="true">
 
         <ImageView
             android:id="@+id/image_title_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            tools:ignore="ContentDescription" />
+            android:layout_centerInParent="true" />
 
         <TextView
             android:id="@+id/text_title_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="done"
             android:textColor="@color/white"
-            android:textSize="16sp"
-            tools:ignore="HardcodedText,RtlSymmetry" />
+            android:textSize="16sp" />
     </RelativeLayout>
 
 </RelativeLayout>

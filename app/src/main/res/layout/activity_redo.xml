@@ -1,56 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/gray_cc"
     tools:context=".RedoActivity">
 
-    <LinearLayout
-        android:id="@+id/redo_layout"
+    <!--<LinearLayout-->
+    <!--android:id="@+id/redo_layout"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="80dp"-->
+    <!--android:orientation="horizontal">-->
+
+    <Switch
+        android:id="@+id/redo_switch"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="@drawable/border_bottom"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_marginStart="5dp"
-            android:layout_weight="5.0"
-            android:gravity="center|left"
-            android:text="重复"
-            android:textColor="@color/black"
-            android:textSize="25sp"
-            tools:ignore="RtlHardcoded" />
-
-        <Switch
-            android:id="@+id/redo_switch"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center|right"
-            android:layout_marginEnd="5dp"
-            android:gravity="center"
-            tools:ignore="RtlHardcoded" />
-    </LinearLayout>
+        android:layout_gravity="center|right"
+        android:background="@drawable/press_change_white_transparent"
+        android:gravity="start|center"
+        android:paddingStart="@dimen/safe_distance"
+        android:paddingEnd="@dimen/safe_distance"
+        android:text="重复"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        tools:ignore="RtlHardcoded" />
+    <!--</LinearLayout>-->
 
     <LinearLayout
         android:id="@+id/period_layout"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:layout_below="@id/redo_layout"
-        android:background="@drawable/border_bottom">
+        android:layout_below="@id/redo_switch"
+        android:layout_marginTop="1dp"
+        android:background="@drawable/press_change_white_transparent">
 
         <TextView
             android:id="@+id/period_text"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_marginStart="5dp"
             android:layout_weight="3.0"
             android:gravity="center|left"
+            android:paddingStart="@dimen/safe_distance"
+            android:paddingEnd="@dimen/safe_distance"
             android:text="周期"
             android:textColor="@color/black"
             android:textSize="25sp"
@@ -71,6 +64,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/period_layout"
+        android:layout_marginTop="1dp"
+        android:background="@color/white"
         android:isScrollContainer="true"
         android:scrollbars="vertical">
 
@@ -79,21 +74,23 @@
             layout="@layout/period_weekly"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="invisible" />
+            android:layout_marginTop="@dimen/safe_distance"
+            android:visibility="gone" />
 
         <include
             android:id="@+id/redo_period_monthly"
             layout="@layout/period_monthly"
+            android:layout_marginTop="@dimen/safe_distance"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="invisible" />
+            android:layout_height="wrap_content" />
 
         <include
             android:id="@+id/redo_period_other"
             layout="@layout/period_other"
             android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/safe_distance"
             android:layout_height="wrap_content"
-            android:visibility="invisible" />
+            android:visibility="gone" />
 
     </RelativeLayout>
 

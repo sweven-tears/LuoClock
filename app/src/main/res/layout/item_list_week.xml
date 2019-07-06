@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?><!--layoutDirection属性可将选择框-->
+<CheckBox xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/checkBox"
+    android:layout_marginStart="@dimen/safe_distance"
+    android:layout_marginEnd="@dimen/safe_distance"
+    android:background="@drawable/border_bottom"
+    android:layoutDirection="rtl"
+    android:padding="@dimen/safe_distance"
+    android:textColor="@color/black"
+    android:textSize="20sp" />

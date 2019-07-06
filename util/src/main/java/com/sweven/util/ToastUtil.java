@@ -226,6 +226,33 @@ public class ToastUtil {
         }
     }
 
+    /**
+     * 需要在使用之前设置
+     * 仅需设置一次
+     *
+     * @param context 上下文
+     * @param gravity toast显示位置
+     */
+    public static void setGravity(Context context, int gravity) {
+        ToastUtil.gravity = gravity;
+        if (toast != null) {
+            switch (gravity) {
+                case TOP:
+                    toast.setGravity(android.view.Gravity.TOP, 0, -getTop(context));
+                    break;
+                case CENTER:
+                    toast.setGravity(android.view.Gravity.CENTER, 0, 0);
+                    break;
+                case BOTTOM:
+                    toast.setGravity(android.view.Gravity.BOTTOM, 0, getBottom());
+                    break;
+                default:
+                    toast = null;
+                    break;
+            }
+        }
+    }
+
     public static class Gravity {
         public static final int DEFAULT = -1;
         public static final int CENTER = 1;

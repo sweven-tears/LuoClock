@@ -9,6 +9,13 @@
     <string name="FormulateActivityTitle">任务制定</string>
 
     <string name="period">选择周期</string>
+    <string name="week_one">周一</string>
+    <string name="week_two">周二</string>
+    <string name="week_three">周三</string>
+    <string name="week_four">周四</string>
+    <string name="week_five">周五</string>
+    <string name="week_six">周六</string>
+    <string name="week_seven">周日</string>
     <string-array name="period_kind">
         <item>每天</item>
         <item>按周</item>

@@ -226,7 +226,7 @@ public class MainActivity extends BaseActivity
                 message.obj = listState;
                 handler.sendMessage(message);
                 return true;
-            case R.id.navigation_setting:
+            case R.id.navigation_mine:
                 secondTime = System.currentTimeMillis();
                 if (secondTime - firstSettingTime > 500) {
                     firstSettingTime = secondTime;
@@ -253,9 +253,9 @@ public class MainActivity extends BaseActivity
         } else if (navigation.getSelectedItemId() == R.id.navigation_list) {
             presentPanel = LIST;
             navigation.setSelectedItemId(R.id.navigation_list);
-        } else if (navigation.getSelectedItemId() == R.id.navigation_setting) {
+        } else if (navigation.getSelectedItemId() == R.id.navigation_mine) {
             presentPanel = SETTING;
-            navigation.setSelectedItemId(R.id.navigation_setting);
+            navigation.setSelectedItemId(R.id.navigation_mine);
         }
     }
 }

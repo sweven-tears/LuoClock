@@ -2,29 +2,31 @@ package com.sweven.clock;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.view.Gravity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.Spinner;
 import android.widget.Switch;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.sweven.clock.adapter.MonthAdapter;
+import com.sweven.clock.adapter.WeekAdapter;
 import com.sweven.clock.base.BaseActivity;
+import com.sweven.clock.entity.Month;
+import com.sweven.clock.entity.Week;
 import com.sweven.clock.listener.CustomListener;
+import com.sweven.util.DateUtil;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -43,16 +45,45 @@ public class RedoActivity extends BaseActivity implements AdapterView.OnItemSele
     public static final int RESULT = 201, REQUEST = 202;
     private static List<Integer> periodArray;
     private static Bundle periodBundle;
-    private LinearLayout redoLayout, periodLayout;
+    private LinearLayout periodLayout;
     private Spinner periodSelect;
     private Switch redoSwitch;
     private LinearLayout periodWeeklyPanel, periodMonthlyPanel, periodOtherPanel;
     private TextView periodText;
-    private LinearLayout weeklyLayout;
-    private TableLayout monthlyTable;
     private TextView doubtImage;
     private EditText otherEdit;
-    private String[] week;
+
+    private RecyclerView weekRecyclerView;
+    private WeekAdapter weekAdapter;
+    private List<Week> weeks = new ArrayList<>();
+
+    private TextView calendarTop;
+    private RecyclerView monthRecyclerView;
+    private MonthAdapter monthAdapter;
+    private List<Month> months = new ArrayList<>();
+    private int year, month;
+
+    {
+        String[] week = new String[]{"周一", "周二", "周三", "周四", "周五", "周六", "周日"};
+        for (String s : week) {
+            weeks.add(new Week(s, false));
+        }
+        Calendar calendar = Calendar.getInstance();
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH) + 1;
+        int weekdayOfMonthFirstDay = DateUtil.getWeekdayOfMonthFirstDay(year, month) - 1;
+        int maxDate = DateUtil.getDaysOfMonth(year, month);
+        for (int i = 0; i < weekdayOfMonthFirstDay % 7 + maxDate; i++) {
+            int j = i - weekdayOfMonthFirstDay % 7;
+            Month m = new Month();
+            if (j < 0) {
+                m.setDay("");
+            } else {
+                m.setDay((j + 1) + "");
+            }
+            months.add(m);
+        }
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -72,7 +103,6 @@ public class RedoActivity extends BaseActivity implements AdapterView.OnItemSele
         periodLayout = findViewById(R.id.period_layout);
         periodSelect = findViewById(R.id.period_select);
 
-        redoLayout = findViewById(R.id.redo_layout);
         redoSwitch = findViewById(R.id.redo_switch);
 
         periodText = findViewById(R.id.period_text);
@@ -81,154 +111,22 @@ public class RedoActivity extends BaseActivity implements AdapterView.OnItemSele
         periodMonthlyPanel = findViewById(R.id.redo_period_monthly);
         periodOtherPanel = findViewById(R.id.redo_period_other);
 
-        weeklyLayout = findViewById(R.id.period_weekly_layout);
-
-        monthlyTable = findViewById(R.id.period_monthly_table);
-        doubtImage = findViewById(R.id.period_monthly_doubt);
-
         otherEdit = findViewById(R.id.period_other_edit);
 
-        monthlyTable();
+        weekRecyclerView = findViewById(R.id.period_weekly_list);
+        weekAdapter = new WeekAdapter(this, weeks);
+        LinearLayoutManager manager = new LinearLayoutManager(this);
+        manager.setOrientation(LinearLayoutManager.VERTICAL);
+        weekRecyclerView.setLayoutManager(manager);
+        weekRecyclerView.setAdapter(weekAdapter);
 
-        weeklyCheckBox();
-    }
-
-    /**
-     * [“每周”周期 布局设置]
-     */
-    @SuppressLint("ClickableViewAccessibility")
-    private void weeklyCheckBox() {
-        week = new String[]{"周一", "周二", "周三", "周四", "周五", "周六", "周日"};
-        LinearLayout layout;
-        TextView textView;
-        for (String aWeek : week) {
-            layout = new LinearLayout(this);
-            layout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 100));
-            layout.setBackgroundResource(R.drawable.border_bottom);
-            layout.setGravity(Gravity.CENTER);
-            layout.setOrientation(LinearLayout.HORIZONTAL);
-
-            textView = new TextView(this);
-            textView.setText(aWeek);
-            textView.setTextSize(20);
-            textView.setTextColor(Color.BLACK);
-            LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 5);
-            lp.gravity = Gravity.CENTER;
-            textView.setLayoutParams(lp);
-            textView.setGravity(Gravity.CENTER | Gravity.START);
-            textView.setPadding(5, 5, 0, 5);
-
-
-            CheckBox checkBox = new CheckBox(this);
-            checkBox.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
-            checkBox.setGravity(Gravity.CENTER);
-
-            layout.addView(textView);
-            layout.addView(checkBox);
-
-            CustomListener touchListener = new CustomListener();
-            touchListener.setOnPressListener(
-                    (view) -> {
-                        LinearLayout linearLayout = (LinearLayout) view;
-                        linearLayout.setBackgroundResource(R.color.gray_cc);
-                    });
-            touchListener.setOnExceptPressListener(
-                    (view) -> {
-                        LinearLayout linearLayout = (LinearLayout) view;
-                        linearLayout.setBackgroundResource(R.drawable.border_bottom);
-                    });
-            touchListener.setOnUpListener(
-                    (view) -> {
-                        ViewGroup linearLayout = (ViewGroup) view;
-                        TextView text = (TextView) linearLayout.getChildAt(0);
-                        CheckBox box = (CheckBox) linearLayout.getChildAt(1);
-                        for (String aWeek1 : week) {
-                            if (text.getText().toString().equals(aWeek1)) {
-                                if (box.isChecked()) {
-                                    box.setChecked(false);
-                                } else {
-                                    box.setChecked(true);
-                                }
-                            }
-                        }
-
-                    });
-            layout.setOnTouchListener(touchListener);
-
-            TextView finalTextView = textView;
-            checkBox.setOnCheckedChangeListener(
-                    (btn, b) -> {
-                        if (b) {
-                            for (int i = 0; i < week.length; i++) {
-                                if (finalTextView.getText().toString().equals(week[i])) {
-                                    periodArray.add(i + 1);
-                                }
-                            }
-                        } else {
-                            for (int i = 0; i < week.length; i++) {
-                                if (finalTextView.getText().toString().equals(week[i])) {
-                                    periodArray.remove((Object) (i + 1));
-                                }
-                            }
-                        }
-                    });
-
-            weeklyLayout.addView(layout);
-        }
-    }
-
-    /**
-     * [“每月”周期 号数的设置与布局]
-     */
-    @SuppressLint({"SetTextI18n"})
-    private void monthlyTable() {
-        TableRow row;
-        TextView textView;
-        for (int i = 1; i < 6; i++) {
-            row = new TableRow(this);
-            for (int j = 1; j <= 7; j++) {
-                textView = new TextView(this);
-                textView.setPaddingRelative(30, 30, 30, 30);
-                textView.setText((i - 1) * 7 + j + "");
-                textView.setTextColor(Color.BLACK);
-                if (i == 1) {
-                    if (j == 1) {
-                        textView.setBackgroundResource(R.drawable.border_all);
-                    } else {
-                        textView.setBackgroundResource(R.drawable.border_right_top_bottom);
-                    }
-                } else {
-                    if (j == 1) {
-                        textView.setBackgroundResource(R.drawable.border_left_right_bottom);
-                    } else {
-                        textView.setBackgroundResource(R.drawable.border_right_bottom);
-                    }
-                }
-                textView.setOnClickListener(this::onClickTableTextView);
-                row.addView(textView);
-                if (i == 5 && j >= 4) {
-                    row.removeView(textView);
-                }
-            }
-            monthlyTable.addView(row);
-        }
-    }
-
-    /**
-     * [“每月”-->号数点击变化]
-     *
-     * @param view textView
-     */
-    private void onClickTableTextView(View view) {
-        boolean isBlue = ((TextView) view).getCurrentTextColor() == Color.BLUE;
-        int num = Integer.parseInt(((TextView) view).getText().toString());
-        if (isBlue) {
-            ((TextView) view).setTextColor(Color.BLACK);
-            periodArray.remove((Object) num);
-        } else {
-            ((TextView) view).setTextColor(Color.BLUE);
-            periodArray.add(num);
-        }
+        calendarTop = findViewById(R.id.calendar_top);
+        monthRecyclerView = findViewById(R.id.period_monthly_list);
+        monthAdapter = new MonthAdapter(this, months);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 7);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        monthRecyclerView.setLayoutManager(layoutManager);
+        monthRecyclerView.setAdapter(monthAdapter);
     }
 
     /**
@@ -236,14 +134,14 @@ public class RedoActivity extends BaseActivity implements AdapterView.OnItemSele
      */
     private void initPeriod() {
         //适配器
-        ArrayAdapter<String> arrayAdapter =
-                new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, PERIOD_KIND);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, PERIOD_KIND);
         //设置样式
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //加载适配器
         periodSelect.setAdapter(arrayAdapter);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void initData() {
         Intent intent = getIntent();
@@ -273,6 +171,8 @@ public class RedoActivity extends BaseActivity implements AdapterView.OnItemSele
             }
         }
 
+        calendarTop.setText(year + "-" + (month < 10 ? month : "0" + month));
+
         periodArray = new ArrayList<>();
         periodBundle = new Bundle();
 
@@ -286,7 +186,6 @@ public class RedoActivity extends BaseActivity implements AdapterView.OnItemSele
             periodLayout.setEnabled(false);
         }
 
-        doubtImage.setBackgroundResource(R.drawable.doubt);
     }
 
     /**
@@ -299,7 +198,6 @@ public class RedoActivity extends BaseActivity implements AdapterView.OnItemSele
 
         redoSwitch.setOnClickListener(this);
         redoSwitch.setOnCheckedChangeListener(this);
-        redoLayout.setOnTouchListener(customListener);
 
         periodSelect.setOnItemSelectedListener(this);
         periodLayout.setOnTouchListener(customListener);
@@ -315,29 +213,19 @@ public class RedoActivity extends BaseActivity implements AdapterView.OnItemSele
     private void setCustomListener(CustomListener customListener) {
         customListener.setOnPressListener(view -> {
             int id = view.getId();
-            if (id == R.id.redo_layout) {
-                redoLayout.setBackgroundResource(R.color.gray_cc);
-            } else if (id == R.id.period_layout) {
+            if (id == R.id.period_layout) {
                 periodLayout.setBackgroundResource(R.color.gray_cc);
             }
         });
         customListener.setOnExceptPressListener(view -> {
             int id = view.getId();
-            if (id == R.id.redo_layout) {
-                redoLayout.setBackgroundResource(R.drawable.border_bottom);
-            } else if (id == R.id.period_layout) {
+            if (id == R.id.period_layout) {
                 periodLayout.setBackgroundResource(R.drawable.border_bottom);
             }
         });
         customListener.setOnUpListener(view -> {
             int id = view.getId();
-            if (id == R.id.redo_layout) {
-                if (redoSwitch.isChecked()) {
-                    redoSwitch.setChecked(false);
-                } else {
-                    redoSwitch.setChecked(true);
-                }
-            } else if (id == R.id.period_layout) {
+            if (id == R.id.period_layout) {
                 periodSelect.performClick();
             }
         });
@@ -345,11 +233,6 @@ public class RedoActivity extends BaseActivity implements AdapterView.OnItemSele
 
     /**
      * [切换周期方式选择对应的页面]
-     *
-     * @param adapterView item
-     * @param view        .
-     * @param i           .
-     * @param l           .
      */
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -394,9 +277,9 @@ public class RedoActivity extends BaseActivity implements AdapterView.OnItemSele
      * @param kind 周期类型
      */
     private void cutPeriodKind(String kind) {
-        periodWeeklyPanel.setVisibility(View.INVISIBLE);
-        periodMonthlyPanel.setVisibility(View.INVISIBLE);
-        periodOtherPanel.setVisibility(View.INVISIBLE);
+        periodWeeklyPanel.setVisibility(View.GONE);
+        periodMonthlyPanel.setVisibility(View.GONE);
+        periodOtherPanel.setVisibility(View.GONE);
         switch (kind) {
             case PERIOD_WEEKLY:
                 periodWeeklyPanel.setVisibility(View.VISIBLE);
@@ -421,29 +304,11 @@ public class RedoActivity extends BaseActivity implements AdapterView.OnItemSele
         switch (kind) {
             //清除“每周”选中的选项
             case PERIOD_WEEKLY:
-                for (int n = 0; n < week.length; n++) {
-                    ViewGroup group = (ViewGroup) weeklyLayout.getChildAt(n);
-                    CheckBox box = (CheckBox) group.getChildAt(1);
-                    box.setChecked(false);
-                }
+                weekAdapter.clearSelected();
                 break;
             //清除“每月”选中的选项
             case PERIOD_MONTHLY:
-                for (int m = 1; m < 6; m++) {
-                    ViewGroup group = (ViewGroup) monthlyTable.getChildAt(m);
-                    TextView textView;
-                    if (m < 5) {
-                        for (int n = 1; n <= 7; n++) {
-                            textView = (TextView) group.getChildAt(n);
-                            textView.setTextColor(Color.BLACK);
-                        }
-                    } else {
-                        for (int n = 1; n <= 3; n++) {
-                            textView = (TextView) group.getChildAt(n);
-                            textView.setTextColor(Color.BLACK);
-                        }
-                    }
-                }
+                monthAdapter.clearSelected();
                 break;
             //清除“其他”输入的数据
             case PERIOD_OTHER:
@@ -454,9 +319,6 @@ public class RedoActivity extends BaseActivity implements AdapterView.OnItemSele
 
     /**
      * [重复状态切换]
-     *
-     * @param compoundButton .
-     * @param b              .
      */
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -483,8 +345,6 @@ public class RedoActivity extends BaseActivity implements AdapterView.OnItemSele
                 periodLayout.setEnabled(false);
                 periodSelect.setEnabled(false);
             }
-        } else if (view.getId() == R.id.period_monthly_doubt) {
-            toast.showShort("解惑（待完善）");
         }
     }
 
@@ -508,6 +368,21 @@ public class RedoActivity extends BaseActivity implements AdapterView.OnItemSele
                         periodArray.add(Integer.valueOf(otherEdit.getText().toString()));
                     } catch (NumberFormatException e) {
                         log.v("输入框未输入任何内容");
+                    }
+                } else if (period.equals(PERIOD_WEEKLY)) {
+                    periodArray.clear();
+                    for (int i = 0; i < weekAdapter.getList().size(); i++) {
+                        if (weekAdapter.getList().get(i).isSelected()) {
+                            periodArray.add(i + 1);
+                        }
+                    }
+                } else if (period.equals(PERIOD_MONTHLY)) {
+                    periodArray.clear();
+                    List<Month> months = monthAdapter.getList();
+                    for (int i = 0; i < months.size(); i++) {
+                        if (months.get(i).isSelected()) {
+                            periodArray.add(Integer.valueOf(months.get(i).getDay()));
+                        }
                     }
                 }
             } else {

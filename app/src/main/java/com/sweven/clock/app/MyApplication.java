@@ -4,6 +4,8 @@ import android.app.Application;
 
 import com.sweven.util.ToastUtil;
 
+import static com.sweven.util.ToastUtil.Gravity.BOTTOM;
+
 /**
  * Created by Sweven on 2019/6/9.
  * Email:sweventears@Foxmail.com
@@ -23,7 +25,6 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        ToastUtil.setGravity(ToastUtil.Gravity.TOP);
-        ToastUtil.setGravity(this);
+        ToastUtil.setGravity(this, BOTTOM);
     }
 }
