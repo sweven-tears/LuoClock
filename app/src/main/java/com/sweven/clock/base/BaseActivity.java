@@ -85,7 +85,7 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 绑定id
      */
-    protected void bindViewId() {
+    protected void bindView() {
     }
 
     /**
@@ -220,7 +220,7 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
      * 左边按键的监听事件
      */
     protected void leftDoWhat() {
-        BaseActivity.this.finish();
+        this.finish();
     }
 
     /**
@@ -342,7 +342,7 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+        if (event.getAction() == KeyEvent.KEYCODE_BACK) {
             onBack();
         }
         return super.onKeyDown(keyCode, event);

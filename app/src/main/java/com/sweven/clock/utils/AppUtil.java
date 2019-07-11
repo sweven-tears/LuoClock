@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import com.sweven.clock.entity.App;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Sweven on 2018/9/15.
@@ -50,8 +51,8 @@ public class AppUtil {
      * 获取系统中所有应用信息，
      * 并将应用软件信息保存到list列表中。
      **/
-    public ArrayList<App> getAllApp() {
-        ArrayList<App> ArrayList = new ArrayList<>();
+    public List<App> getAllApp() {
+        List<App> ArrayList = new ArrayList<>();
         App myApp;
         //获取到所有安装了的应用程序的信息，包括那些卸载了的，但没有清除数据的应用程序
         ArrayList<PackageInfo> packageInfos =
@@ -110,11 +111,9 @@ public class AppUtil {
      */
     private boolean filterApp(ApplicationInfo info) {
         //有些系统应用是可以更新的，如果用户自己下载了一个系统的应用来更新了原来的，它还是系统应用，这个就是判断这种情况的
+        //判断是不是用户自己装的应用
         if ((info.flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0) {//系统应用更新了的应用程序
             return true;
-        } else if ((info.flags & ApplicationInfo.FLAG_SYSTEM) <= 0) {//判断是不是用户自己装的应用
-            return true;
-        }
-        return false;
+        } else return (info.flags & ApplicationInfo.FLAG_SYSTEM) <= 0;
     }
 }

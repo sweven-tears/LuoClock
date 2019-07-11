@@ -1,4 +1,4 @@
-package com.sweven.clock;
+package com.sweven.clock.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.sweven.clock.MainActivity;
+import com.sweven.clock.R;
 import com.sweven.clock.base.BaseActivity;
 import com.sweven.clock.entity.App;
 import com.sweven.clock.listener.ClockOnTouch;
@@ -24,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.sweven.clock.parameter.Redo.BUNDLE_ARRAY;
 import static com.sweven.clock.parameter.Redo.BUNDLE_PERIOD;
 import static com.sweven.clock.parameter.Redo.PERIOD_DAILY;
 import static com.sweven.clock.parameter.Redo.PERIOD_MONTHLY;
@@ -52,6 +55,8 @@ public class FormulateActivity extends BaseActivity implements ClockOnTouch.List
     private TextView hour_up, hour_set, hour_down, minute_up, minute_set, minute_down;
     private ClockOnTouch clockOnTouch;
 
+    private List<Integer> periodArrays=new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +69,7 @@ public class FormulateActivity extends BaseActivity implements ClockOnTouch.List
         showRightButton();
 
         initIntent();
-        bindViewId();
+        bindView();
         initData();
         initListener();
 
@@ -93,7 +98,7 @@ public class FormulateActivity extends BaseActivity implements ClockOnTouch.List
     }
 
     @Override
-    protected void bindViewId() {
+    protected void bindView() {
         appIcon = findViewById(R.id.app_icon);
         appName = findViewById(R.id.app_name);
 
@@ -155,6 +160,7 @@ public class FormulateActivity extends BaseActivity implements ClockOnTouch.List
             Intent intent = new Intent(FormulateActivity.this, RedoActivity.class);
             Bundle bundle = new Bundle();
             bundle.putString(BUNDLE_PERIOD, presentPeriodKind);
+            bundle.putIntegerArrayList(BUNDLE_ARRAY, (ArrayList<Integer>) periodArrays);
             intent.putExtras(bundle);
             startActivityForResult(intent, RedoActivity.REQUEST);
         });
@@ -177,20 +183,6 @@ public class FormulateActivity extends BaseActivity implements ClockOnTouch.List
 
         clockRedoLayout.setOnTouchListener(clockOnTouch);
         clockLabelLayout.setOnTouchListener(clockOnTouch);
-    }
-
-    @Override
-    protected void leftDoWhat() {
-        toast.showShort("back");
-        initAlert("提示", "是否保存？", true);
-        mAlert.setPositiveButton("保存", (dialogInterface, i) -> {
-            saveTask();
-            finish();
-        });
-        mAlert.setNegativeButton("不保存", (dialogInterface, i) -> {
-            finish();
-        });
-        showAlert();
     }
 
     @Override
@@ -250,6 +242,7 @@ public class FormulateActivity extends BaseActivity implements ClockOnTouch.List
         weeks.put(5, "周五");
         weeks.put(6, "周六");
         weeks.put(7, "周日");
+        periodArrays = array;
         switch (period) {
             case PERIOD_WEEKLY:
                 StringBuilder periodBuilder = new StringBuilder();

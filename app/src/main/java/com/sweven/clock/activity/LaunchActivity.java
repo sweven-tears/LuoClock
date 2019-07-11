@@ -1,4 +1,4 @@
-package com.sweven.clock;
+package com.sweven.clock.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -8,12 +8,15 @@ import android.os.Message;
 import android.support.v7.app.ActionBar;
 import android.widget.TextView;
 
+import com.sweven.clock.MainActivity;
+import com.sweven.clock.R;
 import com.sweven.clock.base.BaseActivity;
+import com.sweven.util.WindowUtil;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class StartActivity extends BaseActivity {
+public class LaunchActivity extends BaseActivity {
 
     protected static final int MSG_WHAT = 0;
     /**
@@ -27,7 +30,7 @@ public class StartActivity extends BaseActivity {
      */
     private final Runnable launchRun = () -> {
         if (!isDirect) {
-            Intent intent = new Intent(StartActivity.this, MainActivity.class);
+            Intent intent = new Intent(LaunchActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
             isDirect = true;
@@ -48,19 +51,15 @@ public class StartActivity extends BaseActivity {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             countDown.setText(time + " s");
-            switch (msg.what) {
-                case MSG_WHAT:
-                    if (time > 0) {
-                        time--;
-                    } else {
-                        if (timer != null) {
-                            timer.cancel();
-                            timer = null;
-                        }
+            if (msg.what == MSG_WHAT) {
+                if (time > 0) {
+                    time--;
+                } else {
+                    if (timer != null) {
+                        timer.cancel();
+                        timer = null;
                     }
-                    break;
-                default:
-                    break;
+                }
             }
         }
     };
@@ -69,7 +68,8 @@ public class StartActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_start);
+        setContentView(R.layout.activity_launch);
+        WindowUtil.fullScreen(this);
         countDown = findViewById(R.id.count_down);
 
         countDown.setBackgroundResource(R.drawable.border_round_corner);

@@ -209,19 +209,21 @@ public class ToastUtil {
      */
     public static void setGravity(Context context) {
         if (toast != null) {
-            switch (gravity) {
-                case TOP:
-                    toast.setGravity(android.view.Gravity.TOP, 0, -getTop(context));
-                    break;
-                case CENTER:
-                    toast.setGravity(android.view.Gravity.CENTER, 0, 0);
-                    break;
-                case BOTTOM:
-                    toast.setGravity(android.view.Gravity.BOTTOM, 0, getBottom());
-                    break;
-                default:
-                    toast = null;
-                    break;
+            if (gravity != DEFAULT) {
+                switch (gravity) {
+                    case TOP:
+                        toast.setGravity(android.view.Gravity.TOP, 0, -getTop(context));
+                        break;
+                    case CENTER:
+                        toast.setGravity(android.view.Gravity.CENTER, 0, 0);
+                        break;
+                    case BOTTOM:
+                        toast.setGravity(android.view.Gravity.BOTTOM, 0, getBottom());
+                        break;
+                    default:
+                        toast = null;
+                        break;
+                }
             }
         }
     }

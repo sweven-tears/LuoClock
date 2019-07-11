@@ -1,4 +1,4 @@
-package com.sweven.clock;
+package com.sweven.clock.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -17,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.sweven.clock.R;
 import com.sweven.clock.adapter.MonthAdapter;
 import com.sweven.clock.adapter.WeekAdapter;
 import com.sweven.clock.base.BaseActivity;
@@ -43,14 +44,13 @@ import static com.sweven.clock.parameter.Redo.PERIOD_WEEKLY;
 public class RedoActivity extends BaseActivity implements AdapterView.OnItemSelectedListener, CompoundButton.OnCheckedChangeListener {
 
     public static final int RESULT = 201, REQUEST = 202;
-    private static List<Integer> periodArray;
+    private static List<Integer> periodArray = new ArrayList<>();
     private static Bundle periodBundle;
     private LinearLayout periodLayout;
     private Spinner periodSelect;
     private Switch redoSwitch;
     private LinearLayout periodWeeklyPanel, periodMonthlyPanel, periodOtherPanel;
     private TextView periodText;
-    private TextView doubtImage;
     private EditText otherEdit;
 
     private RecyclerView weekRecyclerView;
@@ -91,14 +91,16 @@ public class RedoActivity extends BaseActivity implements AdapterView.OnItemSele
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_redo);
 
-        bindViewId();
+        setActionBarTitle("重复");
+        setCustomerActionBar(KeyActionBarButtonKind.ACTIONBAR_LEFT, BTN_TYPE_IMG, R.drawable.ic_back_left_white_48dp);
+        bindView();
         initPeriod();
         initListener();
         initData();
     }
 
     @Override
-    protected void bindViewId() {
+    protected void bindView() {
 
         periodLayout = findViewById(R.id.period_layout);
         periodSelect = findViewById(R.id.period_select);
@@ -149,6 +151,7 @@ public class RedoActivity extends BaseActivity implements AdapterView.OnItemSele
             periodBundle = intent.getExtras();
             assert periodBundle != null;
             String period = periodBundle.getString(BUNDLE_PERIOD);
+            periodArray = periodBundle.getIntegerArrayList(BUNDLE_ARRAY);
             if (Objects.requireNonNull(period).equals(PERIOD_NULL)) {
                 redoSwitch.setChecked(false);
             } else {
@@ -160,12 +163,26 @@ public class RedoActivity extends BaseActivity implements AdapterView.OnItemSele
                         break;
                     case PERIOD_WEEKLY:
                         periodSelect.setSelection(1, true);
+                        for (Integer item : periodArray) {
+                            weeks.get(item - 1).setSelected(true);
+                        }
+                        weekRecyclerView.setAdapter(weekAdapter);
                         break;
                     case PERIOD_MONTHLY:
                         periodSelect.setSelection(2, true);
+                        for (Integer item : periodArray) {
+                            for (int i = 0; i < months.size(); i++) {
+                                if (Integer.valueOf(months.get(i).getDay()) == ((int) item)) {
+                                    months.get(i).setSelected(true);
+                                    break;
+                                }
+                            }
+                        }
+                        monthRecyclerView.setAdapter(monthAdapter);
                         break;
                     case PERIOD_OTHER:
                         periodSelect.setSelection(3, true);
+                        otherEdit.setText(String.valueOf(periodArray.size() == 0 ? 0 : periodArray.get(0)));
                         break;
                 }
             }
@@ -173,7 +190,6 @@ public class RedoActivity extends BaseActivity implements AdapterView.OnItemSele
 
         calendarTop.setText(year + "-" + (month < 10 ? month : "0" + month));
 
-        periodArray = new ArrayList<>();
         periodBundle = new Bundle();
 
         if (redoSwitch.isChecked()) {
@@ -201,8 +217,6 @@ public class RedoActivity extends BaseActivity implements AdapterView.OnItemSele
 
         periodSelect.setOnItemSelectedListener(this);
         periodLayout.setOnTouchListener(customListener);
-
-        doubtImage.setOnClickListener(this);
 
         setCustomListener(customListener);
     }
@@ -241,28 +255,26 @@ public class RedoActivity extends BaseActivity implements AdapterView.OnItemSele
         switch (kind) {
             case PERIOD_DAILY:
                 cutPeriodKind(PERIOD_DAILY);
-
-                clearCheckedPeriod(PERIOD_WEEKLY);
-                clearCheckedPeriod(PERIOD_MONTHLY);
-                clearCheckedPeriod(PERIOD_OTHER);
+//                clearCheckedPeriod(PERIOD_WEEKLY);
+//                clearCheckedPeriod(PERIOD_MONTHLY);
+//                clearCheckedPeriod(PERIOD_OTHER);
                 break;
             case PERIOD_WEEKLY:
                 cutPeriodKind(PERIOD_WEEKLY);
-
-                clearCheckedPeriod(PERIOD_MONTHLY);
-                clearCheckedPeriod(PERIOD_OTHER);
+//                clearCheckedPeriod(PERIOD_MONTHLY);
+//                clearCheckedPeriod(PERIOD_OTHER);
                 break;
             case PERIOD_MONTHLY:
                 cutPeriodKind(PERIOD_MONTHLY);
 
-                clearCheckedPeriod(PERIOD_WEEKLY);
-                clearCheckedPeriod(PERIOD_OTHER);
+//                clearCheckedPeriod(PERIOD_WEEKLY);
+//                clearCheckedPeriod(PERIOD_OTHER);
                 break;
             case PERIOD_OTHER:
                 cutPeriodKind(PERIOD_OTHER);
 
-                clearCheckedPeriod(PERIOD_WEEKLY);
-                clearCheckedPeriod(PERIOD_MONTHLY);
+//                clearCheckedPeriod(PERIOD_WEEKLY);
+//                clearCheckedPeriod(PERIOD_MONTHLY);
                 break;
         }
     }

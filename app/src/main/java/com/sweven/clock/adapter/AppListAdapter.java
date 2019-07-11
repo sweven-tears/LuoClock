@@ -13,8 +13,8 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.sweven.clock.FormulateActivity;
 import com.sweven.clock.R;
+import com.sweven.clock.activity.FormulateActivity;
 import com.sweven.clock.entity.App;
 import com.sweven.clock.utils.DrawableUtil;
 
@@ -27,15 +27,15 @@ import java.util.Map;
  * Created by Sweven on 2018/9/15.
  * Email:sweventears@Foxmail.com
  */
-public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ListViewHolder> {
+public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.ListViewHolder> {
 
     private Context context;
-    private ArrayList<App> apps;
+    private List<App> list;
     private LayoutInflater inflater;
 
-    public AppAdapter(Context context, ArrayList<App> appData) {
+    public AppListAdapter(Context context, List<App> appData) {
         this.context = context;
-        this.apps = appData;
+        this.list = appData;
         this.inflater = LayoutInflater.from(context);
     }
 
@@ -48,14 +48,14 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ListViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ListViewHolder holder, int position) {
-        App app = apps.get(position);
+        App app = list.get(position);
         holder.appName.setText(app.getName());
         holder.appIcon.setImageDrawable(app.getIcon());
     }
 
     @Override
     public int getItemCount() {
-        return apps.size();
+        return list.size();
     }
 
     public class ListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -89,7 +89,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ListViewHolder> 
                     List<Map<String, Object>> data = new ArrayList<>();
                     Map<String, Object> item = new HashMap<>();
                     int position = getAdapterPosition();
-                    App app = apps.get(position);
+                    App app = list.get(position);
                     item.put("appName", app.getName());
                     item.put("appPackageName", app.getPackageName());
                     data.add(item);
