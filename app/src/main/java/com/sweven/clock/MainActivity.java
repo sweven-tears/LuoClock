@@ -25,7 +25,7 @@ import java.util.TimerTask;
 public class MainActivity extends BaseActivity
         implements BottomNavigationView.OnNavigationItemSelectedListener {
 
-    private static final int HOME = 0, LIST = 1, MINE = 2;
+    private static final int HOME = 0, LIST = 1, MINE = 2 ;
     private static final String CURRENT_FRAGMENT = "STATE_FRAGMENT_SHOW";
 
     private BottomNavigationView navigation;
